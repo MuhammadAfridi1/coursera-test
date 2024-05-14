@@ -1,6 +1,6 @@
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $to = "saadafriditv@gmail.com"; // Change to your desired email address
+    $to = "MuhammadAfridi@msafridi.studio"; // Change to your desired email address
     $subject = "Message from Website";
     $name = $_POST["name"];
     $email = $_POST["email"];
