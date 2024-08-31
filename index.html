@@ -1,268 +1,243 @@
-
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-	<head>
-	<link rel="shortcut icon" type="image/png" href="logo123.png">
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>MS Afridi Studio &mdash; Connect with us</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="Free HTML5 Template by FREEHTML5.CO" />
-	<meta name="keywords" content="free html5, free template, free bootstrap, html5, css3, mobile first, responsive" />
-	<meta name="author" content="FREEHTML5.CO" />
+<html>
+<head>
+    <title>Foodies Crisp</title>
+    <link rel="icon" href="https://th.bing.com/th/id/OIP.60LBVQPOBMslodW_pA1N3gHaHa?rs=1&pid=ImgDetMain">
+    <style>
+        body {
+            background-color: #F5F5DC;
+        }
+        h1, h2, .link {
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        p {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 20px;
+            padding: 20px;
+        }
+        .link {
+            background-color: silver;
+            padding: 20px;
+            font-size: large;
+        }
+        #logo {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 35%;
+        }
+        .about {
+            text-align: center;
+        }
+        .resize-img {
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            margin-right: 10px;
+            padding: 20px;
+        }
+        .food-item {
+            display: inline-block;
+            text-align: center;
+            background-color: burlywood;
+        }
+        .complete-menu {
+            padding: 20px;
+        }
+        #pizza, #burger, #pasta, #chicken {
+            background-color: #e8aeae;
+        }
+        #fries, #sandwich, #hotdog, #macaroni {
+            background-color: rgb(170, 217, 217);
+        }
+        #nuggets, #pastries, #icecream, #cake {
+            background-color: rgb(240, 210, 164);
+        }
+        #selection{
+            width:103%;
+            padding:10px;
+            margin-bottom:10px;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: larger;
+        }
+    </style>
+</head>
+<body>
+    <section id="home-section">
+        <img id="logo" src="https://th.bing.com/th/id/R.7f6d7fbcea317183f1ccf7b5504d014a?rik=ISd0lzCZd%2boHXw&pid=ImgRaw&r=0" />
+        <h1>FOODIES CRISP</h1>
+        <h2>Menu</h2>
+        <div class="link">
+            <a href="#home-section" style="text-decoration: none; ">‎ ‎ ‎ Home‎ ‎ ‎ </a>
+            <a href="#menu-section" style="text-decoration: none;">Menu‎ ‎ ‎ </a>
+            <a href="#order-section" style="text-decoration: none;">Place your Order</a>
+        </div>
+    </section>
+
+    <div class="complete-menu">
+        <section id="menu-section">
+            <h2>Menu</h2>
+            <figure style="margin:0;">
+                <div class="food-item" id="pizza">
+                    <article>
+                        <h3>Pizza</h3>
+                        <img class="resize-img" src="https://th.bing.com/th?id=OLC.N0QCl4t3u+zBUQ480x360&rs=1&pid=ImgDetMain" alt="Pizza" />
+                        <p>Better than Italy</p>
+                        <p><b><i>price: $20</i></b></p>
+                    </article>
+                </div>
+
+                <div class="food-item" id="pasta">
+                    <article>
+                        <h3>Pasta</h3>
+                        <img class="resize-img" src="https://juliasalbum.com/wp-content/uploads/2022/07/pasta-with-roasted-cherry-tomatoes-chicken-recipe.jpg" alt="Pasta" />
+                        <p>We invented it</p>
+                        <p><b><i>price: $10</i></b></p>
+                    </article>
+                </div>
+
+                <div class="food-item" id="burger">
+                    <article>
+                        <h3>Burgers</h3>
+                        <img class="resize-img" src="https://th.bing.com/th?id=OLC.zdgv+kf7ccUcmQ480x360&rs=1&pid=ImgDetMain" alt="Burger" />
+                        <p>Forget MC Donalds</p>
+                        <p><b><i>price: $2</i></b></p>
+                    </article>
+                </div>
+
+                <div class="food-item" id="chicken">
+                    <article>
+                        <h3>Chicken</h3>
+                        <img class="resize-img" src="https://bing.com/th?id=OSK.fc09b3bc09f542f18a483d92a8a1abe2" alt="Chicken" />
+                        <p>Better than KFC</p>
+                        <p><b><i>price: $20</i></b></p>
+                    </article>
+                </div>
+
+                <div class="food-item" id="fries">
+                    <article>
+                        <h3>French Fries</h3>
+                        <img class="resize-img" src="https://th.bing.com/th/id/R.fc6fa81c17c1e7f1e880b41142cac13c?rik=eJHu6e%2bbzeVydg&pid=ImgRaw&r=0" alt="French Fries" />
+                        <p>Just ordinary Fries</p>
+                        <p><b><i>price: $3</i></b></p>
+                    </article>
+                </div>
+
+                <div class="food-item" id="sandwich">
+                    <article>
+                        <h3>Sandwich</h3>
+                        <img class="resize-img" src="https://th.bing.com/th/id/OSK.HEROHNfkb0wRHqxI19xARbraDum2NbyDNmK51A4q--U_TNc?rs=1&pid=ImgDetMain" alt="Sandwich" />
+                        <p>Made with love</p>
+                        <p><b><i>price: $5</i></b></p>
+                    </article>
+                </div>
+
+                <div class="food-item" id="hotdog">
+                    <article>
+                        <h3>Hot Dogs</h3>
+                        <img class="resize-img" src="https://th.bing.com/th/id/R.db2573ad0edb626e80c96d53f6a010cd?rik=pfu9BPWpj26lJQ&riu=http%3a%2f%2fwww.cuisinetamere.fr%2fwp-content%2fuploads%2fhot-dog.jpg&ehk=LH0y4kZoWxrTVSeStsCq4HLLIvBis7iWEVxIsqDEzxM%3d&risl=&pid=ImgRaw&r=0" alt="Hotdog" />
+                        <p>Our specialty</p>
+                        <p><b><i>price: $5</i></b></p>
+                    </article>
+                </div>
+
+                <div class="food-item" id="macaroni">
+                    <article>
+                        <h3>Macaroni</h3>
+                        <img class="resize-img" src="https://th.bing.com/th/id/R.de896eb3233bf0a05b312542b90a1633?rik=adytcCS1C1zIMg&pid=ImgRaw&r=0" alt="Macaroni" />
+                        <p>Will be a great choice</p>
+                        <p><b><i>price: $10</i></b></p>
+                    </article>
+                </div>
+
+                <div class="food-item" id="nuggets">
+                    <article>
+                        <h3>Nuggets</h3>
+                        <img class="resize-img" src="https://th.bing.com/th/id/R.6aa1ae9688c2cee3d551b899d20ae6f5?rik=k3m2unlVl%2bbQKA&pid=ImgRaw&r=0" alt="Nuggets" />
+                        <p>Finest chicken is used</p>
+                        <p><b><i>price: $15</i></b></p>
+                    </article>
+                </div>
+
+                <div class="food-item" id="pastries">
+                    <article>
+                        <h3>Pastries</h3>
+                        <img class="resize-img" src="https://th.bing.com/th/id/OIP.G4zNSxPNFEXGL8BzJlCaMQAAAA?rs=1&pid=ImgDetMain" alt="Pastries" />
+                        <p>Best in town</p>
+                        <p><b><i>price: $5</i></b></p>
+                    </article>
+                </div>
+
+                <div class="food-item" id="icecream">
+                    <article>
+                        <h3>Ice Cream</h3>
+                        <img class="resize-img" src="https://th.bing.com/th/id/OIP.Z2rbbXU5A4uQHYJCzBRfoQHaF_?rs=1&pid=ImgDetMain" alt="Ice Cream" />
+                        <p>Made with pure milk</p>
+                        <p><b><i>price: $2</i></b></p>
+                    </article>
+                </div>
+
+                <div class="food-item" id="cake">
+                    <article>
+                        <h3>Cakes</h3>
+                        <img class="resize-img" src="https://th.bing.com/th/id/R.27b9cc9f6dd7bc697a2aa7e9acf3f974?rik=O0wJFaCvHtM%2bRw&pid=ImgRaw&r=0" alt="Cake" />
+                        <p>Our delicious</p>
+                        <p><b><i>price: $50</i></b></p>
+                    </article>
+                </div>
+            </figure>
+        </section>
+    </div>
+
+    <br><br>
+
+    <div id="order-section">
+        <h2 style="text-align:center;">Place Your Order</h2>
+        <form style="max-width:600px;margin:auto;padding:20px;border-radius:10px;">
+            <label for="name">Name:</label><br>
+            <input placeholder="Your Name" type="text" id="name" name="name" required style="width:100%;padding:10px;margin-bottom:10px;"><br>
+            
+            <label for="phone">Phone:</label><br>
+            <input placeholder="Your Number" type="tel" id="phone" name="phone" required style="width:100%;padding:10px;margin-bottom:10px;"><br>
+
+            <label for="email">Email:</label><br>
+            <input placeholder="Personal Address" type="email" id="email" name="email" required style="width:100%;padding:10px;margin-bottom:10px;"><br>
+
+            <label for="address">Address:</label><br>
+            <input placeholder="Your Address" type="text" id="address" name="address" required style="width:100%;padding:10px;margin-bottom:10px;"><br>
+
+            <label for="order">Special Order:</label><br>
+            <textarea id="order" name="order" rows="4" required style="width:100%;padding:10px;margin-bottom:10px;"></textarea><br>
+
+            <label for="select" >Choose a food item:</label>
+            <select  id="selection" name="options">
+                <option value="" disabled selected>Select an option</option>
+                <option value="pizza">Pizza</option>
+                <option value="pasta">Pasta</option>
+                <option value="burger">Burgers</option>
+                <option value="burger">Nuggets</option>
+                <option value="burger">Macaroni</option>
+                <option value="burger">Cake</option>
+                <option value="burger">icecream</option>
+                <option value="burger">Pastries</option>
+                <option value="burger">Sandwich</option>
+                <option value="burger">Hotdog</option>
+                <option value="burger">Fries</option>
+                <option value="burger">Chicken</option>
+            </select><br>
+
+            <label for="quantity">Quantity:</label><br>
+            <input type="number" id="quantity" name="quantity" required min="1" min="0" style="width:100%;padding:10px;margin-bottom:10px;"><br>
+
+            <input type="submit" value="Go To Checkout" style="width:100%;background-color:#ac5e5e;color:white;padding:10px;border:none;border-radius:5px;font-size:16px;">
+        </form>
+    </div>
 
 
-  	<!-- Facebook and Twitter integration -->
-	<meta property="og:title" content=""/>
-	<meta property="og:image" content=""/>
-	<meta property="og:url" content=""/>
-	<meta property="og:site_name" content=""/>
-	<meta property="og:description" content=""/>
-	<meta name="twitter:title" content="" />
-	<meta name="twitter:image" content="" />
-	<meta name="twitter:url" content="" />
-	<meta name="twitter:card" content="" />
-
-	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-	<link rel="shortcut icon" href="favicon.ico">
-
-	<link href='https://fonts.googleapis.com/css?family=Playfair+Display:400,700,400italic,700italic|Merriweather:300,400italic,300italic,400,700italic' rel='stylesheet' type='text/css'>
-	
-	<!-- Animate.css -->
-	<link rel="stylesheet" href="css/animate.css">
-	<!-- Icomoon Icon Fonts-->
-	<link rel="stylesheet" href="css/icomoon.css">
-	<!-- Simple Line Icons -->
-	<link rel="stylesheet" href="css/simple-line-icons.css">
-	<!-- Datetimepicker -->
-	<link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css">
-	<!-- Flexslider -->
-	<link rel="stylesheet" href="css/flexslider.css">
-	<!-- Bootstrap  -->
-	<link rel="stylesheet" href="css/bootstrap.css">
-
-	<link rel="stylesheet" href="css/style.css">
-
-
-	<!-- Modernizr JS -->
-	<script src="js/modernizr-2.6.2.min.js"></script>
-	<!-- FOR IE9 below -->
-	<!--[if lt IE 9]>
-	<script src="js/respond.min.js"></script>
-	<![endif]-->
-
-	</head>
-	<body>
-
-	<div id="fh5co-container">
-		<div id="fh5co-home" class="js-fullheight" data-section="home">
-
-			<div class="flexslider">
-				
-				<div class="fh5co-overlay"></div>
-				<div class="fh5co-text">
-					<div class="container">
-						<div class="row">
-							<h1 class="to-animate">Holla</h1>
-							<h2 class="to-animate">Designed <span>by</span> Muhammad Saad Afridi</h2>
-						</div>
-					</div>
-				</div>
-			  	<ul class="slides">
-			   	<li style="background-image: url(images/slide_1.jpg);" data-stellar-background-ratio="0.5"></li>
-			   	<li style="background-image: url(images/slide_2.jpg);" data-stellar-background-ratio="0.5"></li>
-			   	<li style="background-image: url(images/slide_3.jpg);" data-stellar-background-ratio="0.5"></li>
-			  	</ul>
-
-			</div>
-			
-		</div>
-		
-		<div class="js-sticky">
-			<div class="fh5co-main-nav">
-				<div class="container-fluid">
-					<div class="fh5co-menu-1">
-						<a href="#" data-nav-section="home">Home</a>
-						<a href="#" data-nav-section="about">About</a>
-					</div>
-					<div class="fh5co-logo">
-						<a href="index.html"><abbr title="Muhammad Saad Afridi Intruduction">My Intro</abbr></a>
-					</div>
-					<div class="fh5co-menu-2">
-						<a href="#" data-nav-section="reservation">Contact</a>
-					</div>
-				</div>
-				
-			</div>
-		</div>
-
-		<div id="fh5co-about" data-section="about">
-			<div class="fh5co-2col fh5co-bg to-animate-2" style="background-image: url(images/res_img_1.jpg)"></div>
-			<div class="fh5co-2col fh5co-text">
-				<h2 class="heading to-animate">About Me</h2>
-				<p class="to-animate"><span class="firstcharacter">B</span>orn in Karachi, Pakistan, famed for biryani, not computers. From Barron's Model School to Govt Higher Secondary School, I pursued my dream of becoming a computer scientist. With numerous certificates from Coursera and edX in computer science, I now study at University of the Karachi. Driven by a vision, I aim to spearhead a technological revolution in my country, blending professionalism with a systematic approach. Determined to make a difference, I am poised to unify my aspirations into a singular pursuit of progress.
-</p>
-				<p class="text-center to-animate"><a href="#" class="btn btn-primary btn-outline">Get in touch</a></p>
-			</div>
-		</div>
-
-		<div id="fh5co-sayings">
-			<div class="container">
-				<div class="row to-animate">
-
-					<div class="flexslider">
-						<ul class="slides">
-							
-							<li>
-								<blockquote>
-									<p>&ldquo;The most dangerous phrase in the language is, ‘We’ve always done it this way.&rdquo;</p>
-									<p class="quote-author">&mdash; Grace Hopper</p>
-								</blockquote>
-							</li>
-							<li>
-								<blockquote>
-									<p>&ldquo;Programming isn’t about what you know; it’s about what you can figure out.&rdquo;</p>
-									<p class="quote-author">&mdash; Chris Pine</p>
-								</blockquote>
-							</li>
-							<li>
-								<blockquote>
-									<p>&ldquo;Code is like humor. When you have to explain it, it’s bad.&rdquo;</p>
-									<p class="quote-author">&mdash; Cory House</p>
-								</blockquote>
-							</li>
-							<li>
-								<blockquote>
-									<p>&ldquo;Learning to write programs stretches your mind, and helps you think better, creates a way of thinking about things that I think is helpful in all domains.&rdquo;</p>
-									<p class="quote-author">&mdash; Bill Gates</p>
-								</blockquote>
-							</li>
-							
-							
-						</ul>
-					</div>
-
-				</div>
-			</div>
-		</div>
-
-		<div id="fh5co-contact" data-section="reservation">
-			<div class="container">
-				<div class="row text-center fh5co-heading row-padded">
-					<div class="col-md-8 col-md-offset-2">
-						<h2 class="heading to-animate">Contact for Query</h2>
-						<p class="sub-heading to-animate"></p>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-6 to-animate-2">
-						<h3>Contact Info</h3>
-						<ul class="fh5co-contact-info">
-							<li class="fh5co-contact-address ">
-								<i class="icon-home"></i>
-								Korangi Town, Sector 9 Karachi, <br>Anza Towers Pakistan
-							</li>
-							<li><i class="icon-phone"></i> (123) 465-6789</li>
-							<li><i class="icon-envelope"></i>Contact@msafridi.studio</li>
-							<li><i class="icon-globe"></i> <a href="https://msafridi.studio/" target="_blank">MSA Productions</a></li>
-						</ul>
-					</div>
-					<div class="col-md-6 to-animate-2">
-						<h3>Contact Form</h3>
-						<div class="form-group ">
-							<label for="name" class="sr-only">Name</label>
-							<input id="name" class="form-control" placeholder="Name" type="text">
-						</div>
-						<div class="form-group ">
-							<label for="email" class="sr-only">Email</label>
-							<input id="email" class="form-control" placeholder="Email" type="email">
-						</div>
-						<div class="form-group">
-							<label for="occation" class="sr-only">Occation</label>
-							<select class="form-control" id="occation">
-								<option>Select a Cause</option>
-							  <option>Common Queries</option>
-							  <option>Business</option>
-							  <option>Others</option>
-							</select>
-						</div>
-						<div class="form-group ">
-							<label for="date" class="sr-only">Date</label>
-							<input id="date" class="form-control" placeholder="Date &amp; Time" type="text">
-						</div>
-
-
-							
-						<div class="form-group ">
-							<label for="message" class="sr-only">Message</label>
-							<textarea name="" id="message" cols="30" rows="5" class="form-control" placeholder="Message"></textarea>
-						</div>
-						<form action="send_email.php" method="post">
-						    <div class="form-group">
-							    <input class="btn btn-primary" value="Send Message" type="submit" name="submit">
-						</div>
-						</form>
-						</div>
-				</div>
-			</div>
-		</div>
-
-		
-	</div>
-
-	<div id="fh5co-footer">
-		<div class="container">
-			<div class="row row-padded">
-				<div class="col-md-12 text-center">
-					<p class="to-animate">&copy; 2024 all rights reserved by MSA.<br> Designed by <a href="https://msafridi.studio/" target="_blank">MSA Productions</a> Images: <a href="http://pexels.com/" target="_blank">Pexels</a> <br> Courtesy Icons <a href="http://handdrawngoods.com" target="_blank">handdrawn</a>
-					</p>
-					<p class="text-center to-animate"><a href="#" class="js-gotop">Go To Top</a></p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12 text-center">
-					<ul class="fh5co-social">
-						<li class="to-animate-2"><a href="#"><i class="icon-facebook"></i></a></li>
-						<li class="to-animate-2"><a href="#"><i class="icon-twitter"></i></a></li>
-						<li class="to-animate-2"><a href="#"><i class="icon-instagram"></i></a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
-
-
-	
-	
-	
-	
-	<!-- jQuery -->
-	<script src="js/jquery.min.js"></script>
-	<!-- jQuery Easing -->
-	<script src="js/jquery.easing.1.3.js"></script>
-	<!-- Bootstrap -->
-	<script src="js/bootstrap.min.js"></script>
-	<!-- Bootstrap DateTimePicker -->
-	<script src="js/moment.js"></script>
-	<script src="js/bootstrap-datetimepicker.min.js"></script>
-	<!-- Waypoints -->
-	<script src="js/jquery.waypoints.min.js"></script>
-	<!-- Stellar Parallax -->
-	<script src="js/jquery.stellar.min.js"></script>
-
-	<!-- Flexslider -->
-	<script src="js/jquery.flexslider-min.js"></script>
-	<script>
-		$(function () {
-	       $('#date').datetimepicker();
-	   });
-	</script>
-	<!-- Main JS -->
-	<script src="js/main.js"></script>
-
-	</body>
+        <footer style="text-align: center;">
+            <p>Made with love by @muhammadafridi</p>
+        </footer>
+</body>
 </html>
-
