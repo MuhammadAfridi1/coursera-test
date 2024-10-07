@@ -89,11 +89,21 @@
         li {
             margin: 5px 0;
         }
+
+        .pdf-container {
+            width: 100%;
+            height: 150px; /* Adjust height as needed */
+        }
+
+        video {
+            width: 100%;
+            max-height: 150px; /* Control height for video */
+        }
     </style>
     <script type="module">
         // Import Firebase SDK
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-        import { getDatabase, ref, onChildAdded, push, remove, get, child } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+        import { getDatabase, ref, onChildAdded, push, remove, get } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
         import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
         const firebaseConfig = {
@@ -119,7 +129,7 @@
                 const messageData = data.val();
                 const p = document.createElement('p');
 
-                // Check if the message is an image or video URL
+                // Check if the message is an image, video, or PDF URL
                 if (messageData.message.endsWith('.jpg') || messageData.message.endsWith('.jpeg')) {
                     const img = document.createElement('img');
                     img.src = messageData.message;
@@ -128,14 +138,19 @@
                 } else if (messageData.message.endsWith('.mp4') || messageData.message.endsWith('.mov')) {
                     const video = document.createElement('video');
                     video.src = messageData.message;
-                    video.width = 200;
                     video.controls = true;
                     p.appendChild(video);
+                } else if (messageData.message.endsWith('.pdf')) {
+                    const pdfFrame = document.createElement('iframe');
+                    pdfFrame.src = messageData.message;
+                    pdfFrame.className = 'pdf-container';
+                    p.appendChild(pdfFrame);
                 } else {
                     p.textContent = `${messageData.username}: ${messageData.message}`;
                 }
 
                 chatBox.appendChild(p);
+                chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
             });
         }
 
@@ -180,7 +195,7 @@
 
             if (file) {
                 const extension = file.name.split('.').pop().toLowerCase();
-                const validExtensions = ['jpg', 'jpeg', 'mp4', 'mov'];
+                const validExtensions = ['jpg', 'jpeg', 'mp4', 'mov', 'pdf'];
                 if (validExtensions.includes(extension)) {
                     const storageRefPath = storageRef(storage, 'files/' + file.name);
                     uploadBytes(storageRefPath, file).then((snapshot) => {
@@ -191,7 +206,7 @@
                         });
                     });
                 } else {
-                    alert('Invalid file type! Only JPG, JPEG, MP4, and MOV are allowed.');
+                    alert('Invalid file type! Only JPG, JPEG, MP4, MOV, and PDF are allowed.');
                 }
             }
         }
@@ -222,10 +237,8 @@
         <input type="text" id="chat-input" placeholder="Type a message..." />
         <button id="send-button">Send</button>
         <button id="clear-button">Clear Chat</button>
-        
-        <!-- File upload section -->
-        <input type="file" id="file-input" accept=".jpg,.jpeg,.mp4,.mov" /> <!-- Accept only JPG, JPEG, MP4, MOV files -->
-        <button id="upload-button">Upload File</button> <!-- Upload button -->
+        <input type="file" id="file-input" />
+        <button id="upload-button">Upload</button>
     </div>
 </body>
 </html>
