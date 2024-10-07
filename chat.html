@@ -3,39 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Chat</title>
+    <title>Persistent Chat</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        #message-container {
+        #chat-box {
+            width: 100%;
+            height: 300px;
             border: 1px solid #ccc;
             padding: 10px;
-            width: 300px;
-            height: 300px;
             overflow-y: auto;
             margin-bottom: 10px;
         }
-        .message {
+        #chat-box p {
+            margin: 0;
             padding: 5px;
-            margin-bottom: 5px;
-            border-bottom: 1px solid #eee;
-        }
-        #chat-input {
-            width: 80%;
+            background: #f1f1f1;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
+    <div id="chat-box"></div>
 
-    <h1>Chat Box</h1>
-    
-    <div id="message-container"></div>
-
-    <input type="text" id="chat-input" placeholder="Type your message">
+    <input type="text" id="chat-input" placeholder="Type a message">
     <button onclick="sendMessage()">Send</button>
 
     <script src="script.js"></script>
-
 </body>
 </html>
