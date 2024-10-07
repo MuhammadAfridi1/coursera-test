@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1, h3 {
+            margin: 10px 0;
+        }
+
+        .image-container {
+            border: 2px solid #000;
+            padding: 10px;
+            display: inline-block;
+            text-align: center;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-container img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .caption {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .chat-box {
+            border: 1px solid #ccc;
+            background-color: #fff;
+            height: 200px;
+            width: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            padding: 10px 15px;
+            margin-right: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+    </style>
+    <script type="module">
+        // Import Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getDatabase, ref, onChildAdded, push, remove, get, child } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBScJODyKPfXr59q2cLalFMtk_yDSM2WyA",
+            authDomain: "saad-82b8f.firebaseapp.com",
+            databaseURL: "https://saad-82b8f-default-rtdb.firebaseio.com",
+            projectId: "saad-82b8f",
+            storageBucket: "saad-82b8f.appspot.com",
+            messagingSenderId: "973441769275",
+            appId: "1:973441769275:web:572afd367cb5c3b6c9a11e",
+            measurementId: "G-83R61P5P8G"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const storage = getStorage(app);
+
+        function loadMessages() {
+            const chatBox = document.getElementById('chat-box');
+            const messagesRef = ref(database, 'messages');
+
+            onChildAdded(messagesRef, (data) => {
+                const messageData = data.val();
+                const p = document.createElement('p');
+
+                // Check if the message is an image or video URL
+                if (messageData.message.endsWith('.jpg') || messageData.message.endsWith('.jpeg')) {
+                    const img = document.createElement('img');
+                    img.src = messageData.message;
+                    img.width = 100;
+                    p.appendChild(img);
+                } else if (messageData.message.endsWith('.mp4') || messageData.message.endsWith('.mov')) {
+                    const video = document.createElement('video');
+                    video.src = messageData.message;
+                    video.width = 200;
+                    video.controls = true;
+                    p.appendChild(video);
+                } else {
+                    p.textContent = `${messageData.username}: ${messageData.message}`;
+                }
+
+                chatBox.appendChild(p);
+            });
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const username = document.getElementById('username').value.trim() || "Anonymous";
+            const message = input.value.trim();
+
+            if (message) {
+                const messagesRef = ref(database, 'messages');
+                push(messagesRef, { username, message })
+                    .then(() => {
+                        input.value = '';
+                    })
+                    .catch((error) => {
+                        console.error('Error sending message:', error);
+                    });
+            }
+        }
+
+        function clearChat() {
+            const messagesRef = ref(database, 'messages');
+            get(messagesRef)
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        snapshot.forEach((childSnapshot) => {
+                            remove(ref(database, `messages/${childSnapshot.key}`))
+                                .catch((error) => {
+                                    console.error('Error removing message:', error);
+                                });
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error getting messages:', error);
+                });
+        }
+
+        function uploadFile() {
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const extension = file.name.split('.').pop().toLowerCase();
+                const validExtensions = ['jpg', 'jpeg', 'mp4', 'mov'];
+                if (validExtensions.includes(extension)) {
+                    const storageRefPath = storageRef(storage, 'files/' + file.name);
+                    uploadBytes(storageRefPath, file).then((snapshot) => {
+                        getDownloadURL(snapshot.ref).then((url) => {
+                            const username = document.getElementById('username').value.trim() || "Anonymous";
+                            const messagesRef = ref(database, 'messages');
+                            push(messagesRef, { username, message: url });
+                        });
+                    });
+                } else {
+                    alert('Invalid file type! Only JPG, JPEG, MP4, and MOV are allowed.');
+                }
+            }
+        }
+
+        window.onload = () => {
+            loadMessages();
+            document.getElementById('send-button').onclick = sendMessage;
+            document.getElementById('clear-button').onclick = clearChat;
+            document.getElementById('upload-button').onclick = uploadFile;
+        };
+    </script>
+</head>
+<body>
+    <div>
+        <h1>Chat</h1>
+        <h3>Welcome to chat</h3>
+        <b><p>Instructions:</p></b>
+        <ul>
+            <li><p>For clearing chat click clear chat and the messages will clear after you refresh the page again.</p></li>
+            <li><p>Enter your name only one time and then chat in the below box.</p></li>
+        </ul>
+        <div class="image-container">
+            <img src="2.1.jpg" alt="Description of the image">
+            <div class="caption">I will protect your chat</div>
+        </div>
+        <input type="text" id="username" placeholder="Enter your name" />
+        <div id="chat-box" class="chat-box"></div>
+        <input type="text" id="chat-input" placeholder="Type a message..." />
+        <button id="send-button">Send</button>
+        <button id="clear-button">Clear Chat</button>
+        
+        <!-- File upload section -->
+        <input type="file" id="file-input" accept=".jpg,.jpeg,.mp4,.mov" /> <!-- Accept only JPG, JPEG, MP4, MOV files -->
+        <button id="upload-button">Upload File</button> <!-- Upload button -->
+    </div>
+</body>
+</html>
