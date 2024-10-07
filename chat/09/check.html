@@ -43,9 +43,9 @@
             background-color: #218838;
         }
         #chat-box img {
-            max-width: 200px; /* Adjust the size as needed */
-            display: block; /* Ensure images are block elements */
-            margin: 5px 0; /* Add some space around images */
+            max-width: 200px;
+            display: block;
+            margin: 5px 0;
         }
     </style>
 </head>
@@ -92,8 +92,11 @@
         const chatBox = document.getElementById('chat-box');
         const messagesRef = ref(database, `chat_rooms/${chatRoom}`);
 
+        console.log('Loading messages for room:', chatRoom);
+
         onChildAdded(messagesRef, (data) => {
             const messageData = data.val();
+            console.log('Message data received:', messageData);  // Log received message data
             const p = document.createElement('p');
             p.textContent = `${messageData.username}: ${messageData.message}`;
 
@@ -118,20 +121,22 @@
         const imageInput = document.getElementById('image-input');
         const file = imageInput.files[0]; // Get the selected file
 
+        console.log('Sending message:', message);
+
         if (file) {
             const imageRef = storageRef(storage, `images/${file.name}`);
             try {
-                // Upload image to Firebase Storage
+                console.log('Uploading image:', file.name);
                 await uploadBytes(imageRef, file);
-                // Get the download URL
                 const downloadURL = await getDownloadURL(imageRef);
+                console.log('Image uploaded, URL:', downloadURL);
 
-                // Push message with image URL
                 const messagesRef = ref(database, `chat_rooms/${chatRoom}`);
                 push(messagesRef, { username, message, image: downloadURL })
                     .then(() => {
                         input.value = '';
                         imageInput.value = ''; // Clear the file input
+                        console.log('Message with image sent successfully');
                     })
                     .catch((error) => {
                         console.error('Error sending message:', error);
@@ -140,11 +145,11 @@
                 console.error('Error uploading image:', error);
             }
         } else if (message) {
-            // Push message without image
             const messagesRef = ref(database, `chat_rooms/${chatRoom}`);
             push(messagesRef, { username, message })
                 .then(() => {
                     input.value = '';
+                    console.log('Message sent successfully');
                 })
                 .catch((error) => {
                     console.error('Error sending message:', error);
@@ -156,6 +161,7 @@
     function clearChat() {
         const chatBox = document.getElementById('chat-box');
         chatBox.innerHTML = '';
+        console.log('Chat cleared');
     }
 
     // Function to handle chat room submission
@@ -163,6 +169,7 @@
         const roomInput = document.getElementById('room-input');
         chatRoom = roomInput.value.trim();
         if (chatRoom) {
+            console.log('Joining chat room:', chatRoom);
             loadMessages(); // Load messages for the new chat room
             roomInput.value = ''; // Clear the input
             document.getElementById('chat-box').innerHTML = ''; // Clear chat box
