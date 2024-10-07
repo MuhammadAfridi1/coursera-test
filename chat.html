@@ -12,19 +12,28 @@
             padding: 10px;
             overflow-y: auto;
             margin-bottom: 10px;
+            background-color: #f9f9f9;
         }
         #chat-box p {
-            margin: 0;
+            margin: 5px 0;
             padding: 5px;
-            background: #f1f1f1;
+            background: #e1e1e1;
             border-radius: 5px;
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px;
         }
     </style>
 </head>
 <body>
     <div id="chat-box"></div>
 
-    <input type="text" id="chat-input" placeholder="Type a message">
+    <input type="text" id="chat-input" placeholder="Type your message here">
     <button onclick="sendMessage()">Send</button>
 
     <script src="script.js"></script>
