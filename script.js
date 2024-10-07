@@ -1,6 +1,7 @@
 // Function to load messages from localStorage when the page loads
 function loadMessages() {
     const chatBox = document.getElementById('chat-box');
+    chatBox.innerHTML = '';  // Clear the chat box
     const messages = JSON.parse(localStorage.getItem('messages')) || [];
 
     messages.forEach(message => {
