@@ -4,6 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat App</title>
+     <style>
+        .image-container {
+            border: 2px solid #000; /* Frame border */
+            padding: 10px; /* Space between the border and the image */
+            display: inline-block; /* Makes the container fit the content */
+            text-align: center; /* Center the text */
+        }
+        .image-container img {
+            max-width: 100%; /* Ensure the image is responsive */
+            height: auto; /* Maintain aspect ratio */
+        }
+        .caption {
+            margin-top: 10px; /* Space between the image and the caption */
+            font-size: 14px; /* Font size for the caption */
+            color: #555; /* Caption text color */
+        }
+    </style>
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
@@ -95,6 +112,10 @@ function clearChat() {
         <li><p>For clearing chat click clear chat and the messages will clear after you referesh the page again</p></li>
         <li><p>Enter your name only one time and then chat in below box</p></li>
         </ul>
+        <div class="image-container">
+        <img src="2.1.jpg" alt="Description of the image">
+        <div class="caption">I will protect your chat</div>
+        </div>
         <input type="text" id="username" placeholder="Enter your name" />
         <div id="chat-box" style="border: 1px solid #000; height: 300px; overflow-y: scroll;"></div>
         <input type="text" id="chat-input" placeholder="Type a message..." />
