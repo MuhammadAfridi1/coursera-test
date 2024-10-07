@@ -93,7 +93,7 @@
     <script type="module">
         // Import Firebase SDK
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-        import { getDatabase, ref, onChildAdded, push, remove, get } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+        import { getDatabase, ref, onChildAdded, push, remove, get, child } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
         import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
         const firebaseConfig = {
@@ -119,28 +119,17 @@
                 const messageData = data.val();
                 const p = document.createElement('p');
 
-                // Check if the message is an image or video URL
-                if (messageData.message.endsWith('.jpg') || messageData.message.endsWith('.jpeg')) {
+                // Check if the message is an image URL
+                if (messageData.message.startsWith('https://')) {
                     const img = document.createElement('img');
                     img.src = messageData.message;
                     img.width = 100;
                     p.appendChild(img);
-                } else if (messageData.message.endsWith('.mp4') || messageData.message.endsWith('.mov')) {
-                    const video = document.createElement('video');
-                    video.src = messageData.message;
-                    video.width = 200;
-                    video.controls = true;
-                    p.appendChild(video);
                 } else {
                     p.textContent = `${messageData.username}: ${messageData.message}`;
                 }
 
-                // Append the username before the message or media
-                const usernameSpan = document.createElement('strong');
-                usernameSpan.textContent = `${messageData.username}: `;
-                p.prepend(usernameSpan); // Prepend username to the paragraph
                 chatBox.appendChild(p);
-                chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
             });
         }
 
@@ -179,25 +168,19 @@
                 });
         }
 
-        function uploadFile() {
+        function uploadImage() {
             const fileInput = document.getElementById('file-input');
             const file = fileInput.files[0];
 
             if (file) {
-                const extension = file.name.split('.').pop().toLowerCase();
-                const validExtensions = ['jpg', 'jpeg', 'mp4', 'mov'];
-                if (validExtensions.includes(extension)) {
-                    const storageRefPath = storageRef(storage, 'files/' + file.name);
-                    uploadBytes(storageRefPath, file).then((snapshot) => {
-                        getDownloadURL(snapshot.ref).then((url) => {
-                            const username = document.getElementById('username').value.trim() || "Anonymous";
-                            const messagesRef = ref(database, 'messages');
-                            push(messagesRef, { username, message: url });
-                        });
+                const storageRefPath = storageRef(storage, 'images/' + file.name);
+                uploadBytes(storageRefPath, file).then((snapshot) => {
+                    getDownloadURL(snapshot.ref).then((url) => {
+                        const username = document.getElementById('username').value.trim() || "Anonymous";
+                        const messagesRef = ref(database, 'messages');
+                        push(messagesRef, { username, message: url });
                     });
-                } else {
-                    alert('Invalid file type! Only JPG, JPEG, MP4, and MOV are allowed.');
-                }
+                });
             }
         }
 
@@ -205,7 +188,7 @@
             loadMessages();
             document.getElementById('send-button').onclick = sendMessage;
             document.getElementById('clear-button').onclick = clearChat;
-            document.getElementById('upload-button').onclick = uploadFile;
+            document.getElementById('upload-button').onclick = uploadImage;
         };
     </script>
 </head>
@@ -226,11 +209,11 @@
         <div id="chat-box" class="chat-box"></div>
         <input type="text" id="chat-input" placeholder="Type a message..." />
         <button id="send-button">Send</button>
-        <button id="clear-button">Clear Chat</button>
+        <button id="clear-button">Clear Chat</button> <!-- Restored clear chat button -->
         
         <!-- File upload section -->
-        <input type="file" id="file-input" accept=".jpg,.jpeg,.mp4,.mov" /> <!-- Accept only JPG, JPEG, MP4, MOV files -->
-        <button id="upload-button">Upload File</button> <!-- Upload button -->
+        <input type="file" id="file-input" accept=".jpg,.jpeg" /> <!-- Accept only JPG/JPEG files -->
+        <button id="upload-button">Upload Image</button> <!-- Upload button -->
     </div>
 </body>
 </html>
