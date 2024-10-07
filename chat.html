@@ -4,23 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat App</title>
-     <style>
+    <style>
+        body {
+            font-family: Arial, sans-serif; /* Font style */
+            background-color: #f0f0f0; /* Background color */
+            color: #333; /* Text color */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center elements horizontally */
+            justify-content: center; /* Center elements vertically */
+            height: 100vh; /* Full height */
+            margin: 0; /* Remove default margin */
+        }
+
+        h1, h3 {
+            margin: 10px 0; /* Margin for headings */
+        }
+
         .image-container {
             border: 2px solid #000; /* Frame border */
             padding: 10px; /* Space between the border and the image */
             display: inline-block; /* Makes the container fit the content */
             text-align: center; /* Center the text */
+            background-color: #fff; /* Background color for the image container */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
         }
+
         .image-container img {
             width: 100px; /* Set the width to 100 pixels */
             height: 100px; /* Set the height to 100 pixels */
             border-radius: 50%; /* Make the image circular */
             object-fit: cover; /* Ensure the image covers the area without stretching */
         }
+
         .caption {
             margin-top: 10px; /* Space between the image and the caption */
             font-size: 14px; /* Font size for the caption */
             color: #555; /* Caption text color */
+        }
+
+        .chat-box {
+            border: 1px solid #ccc; /* Light border for the chat box */
+            background-color: #fff; /* White background for chat */
+            height: 200px; /* Reduced height for the chat box */
+            width: 300px; /* Set a specific width for the chat box */
+            overflow-y: scroll; /* Allow vertical scrolling */
+            padding: 10px; /* Inner padding */
+            border-radius: 5px; /* Rounded corners */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            margin-bottom: 10px; /* Space below chat box */
+        }
+
+        input[type="text"] {
+            width: 300px; /* Set width for input fields */
+            padding: 10px; /* Inner padding for inputs */
+            margin-bottom: 10px; /* Space below inputs */
+            border: 1px solid #ccc; /* Light border */
+            border-radius: 5px; /* Rounded corners */
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Inner shadow */
+        }
+
+        button {
+            padding: 10px 15px; /* Padding for buttons */
+            margin-right: 5px; /* Space between buttons */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            background-color: #007bff; /* Blue background */
+            color: white; /* White text */
+            cursor: pointer; /* Pointer on hover */
+            transition: background-color 0.3s; /* Smooth transition */
+        }
+
+        button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        ul {
+            list-style-type: none; /* Remove bullet points */
+            padding: 0; /* Remove padding */
+            margin: 10px 0; /* Margin for the list */
+        }
+
+        li {
+            margin: 5px 0; /* Margin for list items */
         }
     </style>
     <script type="module">
@@ -76,24 +143,23 @@
         }
 
         // Clear chat function
-function clearChat() {
-    const messagesRef = ref(database, 'messages');
-    get(messagesRef)
-        .then((snapshot) => {
-            if (snapshot.exists()) {
-                snapshot.forEach((childSnapshot) => {
-                    remove(ref(database, `messages/${childSnapshot.key}`)) // Remove each message correctly
-                        .catch((error) => {
-                            console.error('Error removing message:', error); // Error log
+        function clearChat() {
+            const messagesRef = ref(database, 'messages');
+            get(messagesRef)
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        snapshot.forEach((childSnapshot) => {
+                            remove(ref(database, `messages/${childSnapshot.key}`)) // Remove each message correctly
+                                .catch((error) => {
+                                    console.error('Error removing message:', error); // Error log
+                                });
                         });
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error getting messages:', error); // Error log
                 });
-            }
-        })
-        .catch((error) => {
-            console.error('Error getting messages:', error); // Error log
-        });
-}
-
+        }
 
         // On window load, load messages
         window.onload = () => {
@@ -111,15 +177,15 @@ function clearChat() {
         <h3>Welcome to chat</h3>
         <b><p>Instructions:</p></b>
         <ul>
-        <li><p>For clearing chat click clear chat and the messages will clear after you referesh the page again</p></li>
-        <li><p>Enter your name only one time and then chat in below box</p></li>
+            <li><p>For clearing chat click clear chat and the messages will clear after you refresh the page again.</p></li>
+            <li><p>Enter your name only one time and then chat in the below box.</p></li>
         </ul>
         <div class="image-container">
-        <img src="2.1.jpg" alt="Description of the image">
-        <div class="caption">I will protect your chat</div>
+            <img src="2.1.jpg" alt="Description of the image">
+            <div class="caption">I will protect your chat</div>
         </div>
         <input type="text" id="username" placeholder="Enter your name" />
-        <div id="chat-box" style="border: 1px solid #000; height: 300px; overflow-y: scroll;"></div>
+        <div id="chat-box" class="chat-box"></div>
         <input type="text" id="chat-input" placeholder="Type a message..." />
         <button id="send-button">Send</button>
         <button id="clear-button">Clear Chat</button> <!-- Clear chat button -->
