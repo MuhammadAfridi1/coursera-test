@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Chat App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #chat-box {
+            border: 1px solid #000;
+            height: 300px;
+            overflow-y: scroll;
+            margin: 10px 0;
+            padding: 10px;
+            background: #eaeaea;
+            border-radius: 5px;
+        }
+        input[type="text"], input[type="file"], button {
+            width: calc(100% - 20px);
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #chat-box img {
+            max-width: 200px; /* Adjust the size as needed */
+            display: block; /* Ensure images are block elements */
+            margin: 5px 0; /* Add some space around images */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Private Chat Room</h2>
+        <input type="text" id="username" placeholder="Enter your name" />
+        <input type="text" id="room-input" placeholder="Enter chat room name" />
+        <button id="room-button">Join Chat Room</button>
+        <div id="chat-box"></div>
+        <input type="file" id="image-input" accept="image/*" />
+        <input type="text" id="chat-input" placeholder="Type a message" />
+        <button id="send-button">Send</button>
+        <button onclick="clearChat()">Clear Chat</button>
+    </div>
+
+    <script type="module">
+        // Import necessary Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getDatabase, ref, onChildAdded, push } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID",
+            measurementId: "YOUR_MEASUREMENT_ID"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const storage = getStorage(app);
+
+        let chatRoom = ''; // Variable to hold the chat room name
+
+        // Function to load messages
+        function loadMessages() {
+            const chatBox = document.getElementById('chat-box');
+            const messagesRef = ref(database, `chat_rooms/${chatRoom}`);
+
+            onChildAdded(messagesRef, (data) => {
+                const messageData = data.val();
+                const p = document.createElement('p');
+                p.textContent = `${messageData.username}: ${messageData.message}`;
+
+                // If there's an image, create an img element
+                if (messageData.image) {
+                    const img = document.createElement('img');
+                    img.src = messageData.image;
+                    img.alt = "Shared Image";
+                    chatBox.appendChild(img);
+                }
+                
+                chatBox.appendChild(p);
+            });
+        }
+
+        // Function to send message including images
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const username = document.getElementById('username').value.trim() || "Anonymous";
+            const message = input.value.trim();
+            const imageInput = document.getElementById('image-input');
+            const file = imageInput.files[0]; // Get the selected file
+
+            if (file) {
+                const imageRef = storageRef(storage, `images/${file.name}`);
+                try {
+                    // Upload image to Firebase Storage
+                    await uploadBytes(imageRef, file);
+                    // Get the download URL
+                    const downloadURL = await getDownloadURL(imageRef);
+
+                    // Push message with image URL
+                    const messagesRef = ref(database, `chat_rooms/${chatRoom}`);
+                    push(messagesRef, { username, message, image: downloadURL })
+                        .then(() => {
+                            input.value = '';
+                            imageInput.value = ''; // Clear the file input
+                        })
+                        .catch((error) => {
+                            console.error('Error sending message:', error);
+                        });
+                } catch (error) {
+                    console.error('Error uploading image:', error);
+                }
+            } else if (message) {
+                // Push message without image
+                const messagesRef = ref(database, `chat_rooms/${chatRoom}`);
+                push(messagesRef, { username, message })
+                    .then(() => {
+                        input.value = '';
+                    })
+                    .catch((error) => {
+                        console.error('Error sending message:', error);
+                    });
+            }
+        }
+
+        // Function to clear chat
+        function clearChat() {
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML = '';
+        }
+
+        // Function to handle chat room submission
+        function joinChatRoom() {
+            const roomInput = document.getElementById('room-input');
+            chatRoom = roomInput.value.trim();
+            if (chatRoom) {
+                loadMessages(); // Load messages for the new chat room
+                roomInput.value = ''; // Clear the input
+                document.getElementById('chat-box').innerHTML = ''; // Clear chat box
+            }
+        }
+
+        document.getElementById('send-button').addEventListener('click', sendMessage);
+        document.getElementById('room-button').addEventListener('click', joinChatRoom);
+    </script>
+</body>
+</html>
