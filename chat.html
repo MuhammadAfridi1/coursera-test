@@ -57,23 +57,24 @@
         }
 
         // Clear chat function
-        function clearChat() {
-            const messagesRef = ref(database, 'messages');
-            get(messagesRef)
-                .then((snapshot) => {
-                    if (snapshot.exists()) {
-                        snapshot.forEach((childSnapshot) => {
-                            remove(child(ref(messagesRef, childSnapshot.key))) // Remove each message
-                                .catch((error) => {
-                                    console.error('Error removing message:', error); // Error log
-                                });
+function clearChat() {
+    const messagesRef = ref(database, 'messages');
+    get(messagesRef)
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                snapshot.forEach((childSnapshot) => {
+                    remove(ref(database, `messages/${childSnapshot.key}`)) // Remove each message correctly
+                        .catch((error) => {
+                            console.error('Error removing message:', error); // Error log
                         });
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error getting messages:', error); // Error log
                 });
-        }
+            }
+        })
+        .catch((error) => {
+            console.error('Error getting messages:', error); // Error log
+        });
+}
+
 
         // On window load, load messages
         window.onload = () => {
