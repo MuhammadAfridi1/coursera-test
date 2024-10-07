@@ -72,7 +72,7 @@
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_AUTH_DOMAIN",
-            databaseURL: "YOUR_DATABASE_URL",
+            databaseURL: "https://<YOUR_FIREBASE_PROJECT_ID>.firebaseio.com", // Ensure this is in the correct format
             projectId: "YOUR_PROJECT_ID",
             storageBucket: "YOUR_STORAGE_BUCKET",
             messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
@@ -106,6 +106,7 @@
                 }
                 
                 chatBox.appendChild(p);
+                chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
             });
         }
 
@@ -117,6 +118,8 @@
             const imageInput = document.getElementById('image-input');
             const file = imageInput.files[0]; // Get the selected file
 
+            const messagesRef = ref(database, `chat_rooms/${chatRoom}`);
+
             if (file) {
                 const imageRef = storageRef(storage, `images/${file.name}`);
                 try {
@@ -126,28 +129,16 @@
                     const downloadURL = await getDownloadURL(imageRef);
 
                     // Push message with image URL
-                    const messagesRef = ref(database, `chat_rooms/${chatRoom}`);
-                    push(messagesRef, { username, message, image: downloadURL })
-                        .then(() => {
-                            input.value = '';
-                            imageInput.value = ''; // Clear the file input
-                        })
-                        .catch((error) => {
-                            console.error('Error sending message:', error);
-                        });
+                    await push(messagesRef, { username, message, image: downloadURL });
+                    input.value = '';
+                    imageInput.value = ''; // Clear the file input
                 } catch (error) {
                     console.error('Error uploading image:', error);
                 }
             } else if (message) {
                 // Push message without image
-                const messagesRef = ref(database, `chat_rooms/${chatRoom}`);
-                push(messagesRef, { username, message })
-                    .then(() => {
-                        input.value = '';
-                    })
-                    .catch((error) => {
-                        console.error('Error sending message:', error);
-                    });
+                await push(messagesRef, { username, message });
+                input.value = '';
             }
         }
 
