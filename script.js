@@ -1,25 +1,36 @@
-function sendMessage() {
-    // Get the message input element
-    var input = document.getElementById('chat-input');
-    
-    // Get the message container where the messages will be displayed
-    var messageContainer = document.getElementById('message-container');
-    
-    // Create a new paragraph element
-    var newMessage = document.createElement('p');
-    
-    // Set the text of the new message to the input value
-    newMessage.textContent = input.value;
-    
-    // Add a class to the message for styling (optional)
-    newMessage.className = 'message';
-    
-    // Append the new message to the message container
-    messageContainer.appendChild(newMessage);
-    
-    // Clear the input field for the next message
-    input.value = '';
+// Function to load messages from localStorage when the page loads
+function loadMessages() {
+    const chatBox = document.getElementById('chat-box');
+    const messages = JSON.parse(localStorage.getItem('messages')) || [];
 
-    // Automatically scroll to the bottom of the message container
-    messageContainer.scrollTop = messageContainer.scrollHeight;
+    messages.forEach(message => {
+        const p = document.createElement('p');
+        p.textContent = message;
+        chatBox.appendChild(p);
+    });
 }
+
+// Function to send and store the message
+function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const message = input.value.trim();
+
+    if (message) {
+        // Add the message to the chat box
+        const chatBox = document.getElementById('chat-box');
+        const p = document.createElement('p');
+        p.textContent = message;
+        chatBox.appendChild(p);
+
+        // Store the message in localStorage
+        const messages = JSON.parse(localStorage.getItem('messages')) || [];
+        messages.push(message);
+        localStorage.setItem('messages', JSON.stringify(messages));
+
+        // Clear the input field
+        input.value = '';
+    }
+}
+
+// Load messages when the page loads
+window.onload = loadMessages;
