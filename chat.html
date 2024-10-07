@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat App</title>
     <script type="module">
-        // Import the functions you need from the SDKs you need
+        // Import Firebase functions
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
         import { getDatabase, ref, onChildAdded, push } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
 
@@ -38,18 +38,6 @@
             });
         }
 
-        // Send message function
-        function sendMessage() {
-            const input = document.getElementById('chat-input');
-            const message = input.value.trim();
-
-            if (message) {
-                const messagesRef = ref(database, 'messages');
-                push(messagesRef, message); // Store the message
-                input.value = ''; // Clear input
-            }
-        }
-
         // On window load, load messages
         window.onload = () => {
             loadMessages();
@@ -61,7 +49,34 @@
         <h1>Chat</h1>
         <div id="chat-box" style="border: 1px solid #000; height: 300px; overflow-y: scroll;"></div>
         <input type="text" id="chat-input" placeholder="Type a message..." />
-        <button onclick="sendMessage()">Send</button>
+        <button id="send-button">Send</button>
     </div>
+
+    <script>
+        // Send message function
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+
+            console.log('Sending message:', message); // Debug log
+
+            if (message) {
+                const messagesRef = ref(database, 'messages');
+                push(messagesRef, message) // Store the message
+                    .then(() => {
+                        console.log('Message sent successfully'); // Success log
+                        input.value = ''; // Clear input
+                    })
+                    .catch((error) => {
+                        console.error('Error sending message:', error); // Error log
+                    });
+            } else {
+                console.warn('Empty message, not sent'); // Warn for empty messages
+            }
+        }
+
+        // Attach sendMessage to the button
+        document.getElementById('send-button').onclick = sendMessage;
+    </script>
 </body>
 </html>
