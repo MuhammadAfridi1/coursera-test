@@ -190,6 +190,46 @@
             document.getElementById('clear-button').onclick = clearChat;
             document.getElementById('upload-button').onclick = uploadImage;
         };
+        function loadMessages() {
+    const chatBox = document.getElementById('chat-box');
+    const messagesRef = ref(database, 'messages');
+
+    onChildAdded(messagesRef, (data) => {
+        const messageData = data.val();
+        const p = document.createElement('p');
+
+        // Check if the message is an image URL
+        if (messageData.message.startsWith('https://')) {
+            // Check for video formats
+            if (messageData.message.endsWith('.mp4') || messageData.message.endsWith('.mov')) {
+                const video = document.createElement('video');
+                video.src = messageData.message;
+                video.width = 200; // Adjust width as needed
+                video.controls = true; // Show video controls
+                p.appendChild(video);
+            } 
+            // Check for PDF files
+            else if (messageData.message.endsWith('.pdf')) {
+                const pdfLink = document.createElement('a');
+                pdfLink.href = messageData.message;
+                pdfLink.textContent = "View PDF";
+                pdfLink.target = "_blank"; // Open in a new tab
+                p.appendChild(pdfLink);
+            } 
+            // Check for images
+            else {
+                const img = document.createElement('img');
+                img.src = messageData.message;
+                img.width = 100;
+                p.appendChild(img);
+            }
+        } else {
+            p.textContent = `${messageData.username}: ${messageData.message}`;
+        }
+
+        chatBox.appendChild(p);
+    });
+}
     </script>
 </head>
 <body>
