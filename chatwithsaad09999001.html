@@ -93,7 +93,7 @@
     <script type="module">
         // Import Firebase SDK
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-        import { getDatabase, ref, onChildAdded, push, remove, get, child } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+        import { getDatabase, ref, onChildAdded, push, remove, get } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
         import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
         const firebaseConfig = {
@@ -119,12 +119,31 @@
                 const messageData = data.val();
                 const p = document.createElement('p');
 
-                // Check if the message is an image URL
+                // Check if the message is a URL
                 if (messageData.message.startsWith('https://')) {
-                    const img = document.createElement('img');
-                    img.src = messageData.message;
-                    img.width = 100;
-                    p.appendChild(img);
+                    // Check for video formats
+                    if (messageData.message.endsWith('.mp4') || messageData.message.endsWith('.mov')) {
+                        const video = document.createElement('video');
+                        video.src = messageData.message;
+                        video.width = 200; // Adjust width as needed
+                        video.controls = true; // Show video controls
+                        p.appendChild(video);
+                    } 
+                    // Check for PDF files
+                    else if (messageData.message.endsWith('.pdf')) {
+                        const pdfLink = document.createElement('a');
+                        pdfLink.href = messageData.message;
+                        pdfLink.textContent = "View PDF";
+                        pdfLink.target = "_blank"; // Open in a new tab
+                        p.appendChild(pdfLink);
+                    } 
+                    // Check for images
+                    else {
+                        const img = document.createElement('img');
+                        img.src = messageData.message;
+                        img.width = 100;
+                        p.appendChild(img);
+                    }
                 } else {
                     p.textContent = `${messageData.username}: ${messageData.message}`;
                 }
@@ -173,7 +192,7 @@
             const file = fileInput.files[0];
 
             if (file) {
-                const storageRefPath = storageRef(storage, 'images/' + file.name);
+                const storageRefPath = storageRef(storage, 'uploads/' + file.name); // Change to 'uploads/' to prevent overwriting images
                 uploadBytes(storageRefPath, file).then((snapshot) => {
                     getDownloadURL(snapshot.ref).then((url) => {
                         const username = document.getElementById('username').value.trim() || "Anonymous";
@@ -190,46 +209,6 @@
             document.getElementById('clear-button').onclick = clearChat;
             document.getElementById('upload-button').onclick = uploadImage;
         };
-        function loadMessages() {
-    const chatBox = document.getElementById('chat-box');
-    const messagesRef = ref(database, 'messages');
-
-    onChildAdded(messagesRef, (data) => {
-        const messageData = data.val();
-        const p = document.createElement('p');
-
-        // Check if the message is an image URL
-        if (messageData.message.startsWith('https://')) {
-            // Check for video formats
-            if (messageData.message.endsWith('.mp4') || messageData.message.endsWith('.mov')) {
-                const video = document.createElement('video');
-                video.src = messageData.message;
-                video.width = 200; // Adjust width as needed
-                video.controls = true; // Show video controls
-                p.appendChild(video);
-            } 
-            // Check for PDF files
-            else if (messageData.message.endsWith('.pdf')) {
-                const pdfLink = document.createElement('a');
-                pdfLink.href = messageData.message;
-                pdfLink.textContent = "View PDF";
-                pdfLink.target = "_blank"; // Open in a new tab
-                p.appendChild(pdfLink);
-            } 
-            // Check for images
-            else {
-                const img = document.createElement('img');
-                img.src = messageData.message;
-                img.width = 100;
-                p.appendChild(img);
-            }
-        } else {
-            p.textContent = `${messageData.username}: ${messageData.message}`;
-        }
-
-        chatBox.appendChild(p);
-    });
-}
     </script>
 </head>
 <body>
@@ -249,11 +228,11 @@
         <div id="chat-box" class="chat-box"></div>
         <input type="text" id="chat-input" placeholder="Type a message..." />
         <button id="send-button">Send</button>
-        <button id="clear-button">Clear Chat</button> <!-- Restored clear chat button -->
+        <button id="clear-button">Clear Chat</button>
         
         <!-- File upload section -->
-        <input type="file" id="file-input" accept=".jpg,.jpeg,.mp4,.mov,.pdf" /> <!-- Accept only JPG/JPEG files -->
-        <button id="upload-button">Upload Image</button> <!-- Upload button -->
+        <input type="file" id="file-input" accept=".jpg,.jpeg,.mp4,.mov,.pdf" />
+        <button id="upload-button">Upload</button> <!-- Upload button -->
     </div>
 </body>
 </html>
