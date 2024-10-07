@@ -7,7 +7,7 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-        import { getDatabase, ref, onChildAdded, push } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+        import { getDatabase, ref, onChildAdded, push, remove, get, child } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -56,11 +56,32 @@
             }
         }
 
+        // Clear chat function
+        function clearChat() {
+            const messagesRef = ref(database, 'messages');
+            get(messagesRef)
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        snapshot.forEach((childSnapshot) => {
+                            remove(child(ref(messagesRef, childSnapshot.key))) // Remove each message
+                                .catch((error) => {
+                                    console.error('Error removing message:', error); // Error log
+                                });
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error getting messages:', error); // Error log
+                });
+        }
+
         // On window load, load messages
         window.onload = () => {
             loadMessages();
             // Attach sendMessage function to the button
             document.getElementById('send-button').onclick = sendMessage;
+            // Attach clearChat function to the clear button
+            document.getElementById('clear-button').onclick = clearChat;
         };
     </script>
 </head>
@@ -71,6 +92,7 @@
         <div id="chat-box" style="border: 1px solid #000; height: 300px; overflow-y: scroll;"></div>
         <input type="text" id="chat-input" placeholder="Type a message..." />
         <button id="send-button">Send</button>
+        <button id="clear-button">Clear Chat</button> <!-- Clear chat button -->
     </div>
 </body>
 </html>
