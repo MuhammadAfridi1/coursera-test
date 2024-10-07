@@ -6,33 +6,29 @@
     <title>Chat App</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #e9ecef;
-            color: #495057;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         h1, h3 {
             margin: 10px 0;
-            color: #007bff;
         }
 
         .image-container {
-            border: 2px solid #007bff;
+            border: 2px solid #000;
             padding: 10px;
             display: inline-block;
             text-align: center;
             background-color: #fff;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
-            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .image-container img {
@@ -40,7 +36,6 @@
             height: 100px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #007bff;
         }
 
         .caption {
@@ -52,50 +47,37 @@
         .chat-box {
             border: 1px solid #ccc;
             background-color: #fff;
-            height: 300px;
-            width: 100%;
-            max-width: 400px;
+            height: 200px;
+            width: 300px;
             overflow-y: scroll;
-            padding: 15px;
+            padding: 10px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
-        input[type="text"], input[type="file"] {
-            width: 100%;
-            max-width: 400px;
-            padding: 12px;
+        input[type="text"] {
+            width: 300px;
+            padding: 10px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus {
-            border-color: #007bff;
-            outline: none;
         }
 
         button {
             padding: 10px 15px;
+            margin-right: 5px;
             border: none;
             border-radius: 5px;
             background-color: #007bff;
             color: white;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-            margin-right: 5px;
+            transition: background-color 0.3s;
         }
 
         button:hover {
             background-color: #0056b3;
-            transform: translateY(-1px);
-        }
-
-        button:active {
-            transform: translateY(0);
         }
 
         ul {
@@ -108,15 +90,26 @@
             margin: 5px 0;
         }
 
-        p {
-            margin: 0;
+        .pdf-container {
+            width: 100%;
+            height: 150px; /* Adjust height as needed */
         }
-        </style>
+
+        video {
+            width: 100%;
+            max-height: 150px; /* Control height for video */
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
     <script type="module">
         // Import Firebase SDK
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
         import { getDatabase, ref, onChildAdded, push, remove, get } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
         import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBScJODyKPfXr59q2cLalFMtk_yDSM2WyA",
@@ -132,7 +125,10 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const storage = getStorage(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
+        // Function to load messages from Firebase
         function loadMessages() {
             const chatBox = document.getElementById('chat-box');
             const messagesRef = ref(database, 'messages');
@@ -141,58 +137,56 @@
                 const messageData = data.val();
                 const p = document.createElement('p');
 
-                // Check if the message is an image URL
-                if (messageData.message.startsWith('https://')) {
-                    // Check for video formats
-                    if (messageData.message.endsWith('.mp4') || messageData.message.endsWith('.mov')) {
-                        const video = document.createElement('video');
-                        video.src = messageData.message;
-                        video.width = 200; // Adjust width as needed
-                        video.controls = true; // Show video controls
-                        p.appendChild(video);
-                    } 
-                    // Check for PDF files
-                    else if (messageData.message.endsWith('.pdf')) {
-                        const pdfLink = document.createElement('a');
-                        pdfLink.href = messageData.message;
-                        pdfLink.textContent = "View PDF";
-                        pdfLink.target = "_blank"; // Open in a new tab
-                        p.appendChild(pdfLink);
-                    } 
-                    // Check for images
-                    else {
-                        const img = document.createElement('img');
-                        img.src = messageData.message;
-                        img.width = 100; // Adjust image size as needed
-                        p.appendChild(img);
-                    }
+                // Check if the message is an image, video, or PDF URL
+                if (messageData.message.endsWith('.jpg') || messageData.message.endsWith('.jpeg')) {
+                    const img = document.createElement('img');
+                    img.src = messageData.message;
+                    img.width = 100;
+                    p.appendChild(img);
+                } else if (messageData.message.endsWith('.mp4') || messageData.message.endsWith('.mov')) {
+                    const video = document.createElement('video');
+                    video.src = messageData.message;
+                    video.controls = true;
+                    p.appendChild(video);
+                } else if (messageData.message.endsWith('.pdf')) {
+                    const pdfFrame = document.createElement('iframe');
+                    pdfFrame.src = messageData.message;
+                    pdfFrame.className = 'pdf-container';
+                    p.appendChild(pdfFrame);
                 } else {
-                    // Display regular text messages
                     p.textContent = `${messageData.username}: ${messageData.message}`;
                 }
 
                 chatBox.appendChild(p);
-                chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom of the chat
+                chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
             });
         }
 
+        // Function to send a message
         function sendMessage() {
             const input = document.getElementById('chat-input');
-            const username = document.getElementById('username').value.trim() || "Anonymous";
-            const message = input.value.trim();
+            const user = auth.currentUser;
 
-            if (message) {
-                const messagesRef = ref(database, 'messages');
-                push(messagesRef, { username, message })
-                    .then(() => {
-                        input.value = '';
-                    })
-                    .catch((error) => {
-                        console.error('Error sending message:', error);
-                    });
+            if (user) {
+                const username = user.displayName || "Anonymous";
+                const message = input.value.trim();
+
+                if (message) {
+                    const messagesRef = ref(database, 'messages');
+                    push(messagesRef, { username, message })
+                        .then(() => {
+                            input.value = '';
+                        })
+                        .catch((error) => {
+                            console.error('Error sending message:', error);
+                        });
+                }
+            } else {
+                alert('Please sign in to send messages.');
             }
         }
 
+        // Function to clear chat
         function clearChat() {
             const messagesRef = ref(database, 'messages');
             get(messagesRef)
@@ -211,52 +205,90 @@
                 });
         }
 
-        function uploadImage() {
+        // Function to upload a file
+        function uploadFile() {
             const fileInput = document.getElementById('file-input');
             const file = fileInput.files[0];
 
             if (file) {
-                const storageRefPath = storageRef(storage, 'images/' + file.name);
-                uploadBytes(storageRefPath, file).then((snapshot) => {
-                    getDownloadURL(snapshot.ref).then((url) => {
-                        const username = document.getElementById('username').value.trim() || "Anonymous";
-                        const messagesRef = ref(database, 'messages');
-                        push(messagesRef, { username, message: url });
+                const extension = file.name.split('.').pop().toLowerCase();
+                const validExtensions = ['jpg', 'jpeg', 'mp4', 'mov', 'pdf'];
+                if (validExtensions.includes(extension)) {
+                    const storageRefPath = storageRef(storage, 'files/' + file.name);
+                    uploadBytes(storageRefPath, file).then((snapshot) => {
+                        getDownloadURL(snapshot.ref).then((url) => {
+                            const user = auth.currentUser;
+                            const username = user.displayName || "Anonymous";
+                            const messagesRef = ref(database, 'messages');
+                            push(messagesRef, { username, message: url });
+                        });
                     });
-                });
+                } else {
+                    alert('Invalid file type! Only JPG, JPEG, MP4, MOV, and PDF are allowed.');
+                }
             }
         }
 
+        // Sign in function
+        function signIn() {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    console.log('User signed in: ', user);
+                })
+                .catch((error) => {
+                    console.error('Error signing in: ', error);
+                });
+        }
+
+        // Sign out function
+        function signOutUser() {
+            signOut(auth).then(() => {
+                console.log('User signed out');
+            }).catch((error) => {
+                console.error('Error signing out: ', error);
+            });
+        }
+
+        // Monitor authentication state
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('chat-area').classList.remove('hidden');
+                document.getElementById('sign-in-button').classList.add('hidden');
+                document.getElementById('sign-out-button').classList.remove('hidden');
+                loadMessages();
+            } else {
+                document.getElementById('chat-area').classList.add('hidden');
+                document.getElementById('sign-in-button').classList.remove('hidden');
+                document.getElementById('sign-out-button').classList.add('hidden');
+            }
+        });
+
         window.onload = () => {
-            loadMessages();
-            document.getElementById('send-button').onclick = sendMessage;
-            document.getElementById('clear-button').onclick = clearChat;
-            document.getElementById('upload-button').onclick = uploadImage;
+            // Automatically sign in or check for existing user
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    console.log('User is already signed in:', user);
+                }
+            });
         };
     </script>
 </head>
 <body>
-    <div>
-        <h1>Chat</h1>
-        <h3>Welcome to chat</h3>
-        <b><p>Instructions:</p></b>
-        <ul>
-            <li><p>For clearing chat click clear chat and the messages will clear after you refresh the page again.</p></li>
-            <li><p>Enter your name only one time and then chat in the below box.</p></li>
-        </ul>
-        <div class="image-container">
-            <img src="2.1.jpg" alt="Description of the image">
-            <div class="caption">I will protect your chat</div>
-        </div>
-        <input type="text" id="username" placeholder="Enter your name" />
+    <h1>Chat Application</h1>
+    <div id="sign-in-area">
+        <button id="sign-in-button" onclick="signIn()">Sign in with Google</button>
+        <button id="sign-out-button" onclick="signOutUser()" class="hidden">Sign out</button>
+    </div>
+    
+    <div id="chat-area" class="hidden">
+        <h3>Chat Messages</h3>
         <div id="chat-box" class="chat-box"></div>
         <input type="text" id="chat-input" placeholder="Type a message..." />
-        <button id="send-button">Send</button>
-        <button id="clear-button">Clear Chat</button>
-        
-        <!-- File upload section -->
-        <input type="file" id="file-input" accept=".jpg,.jpeg,.png" />
-        <button id="upload-button">Upload Image</button>
+        <button onclick="sendMessage()">Send</button>
+        <button onclick="clearChat()">Clear Chat</button>
+        <input type="file" id="file-input" />
+        <button id="upload-button" onclick="uploadFile()">Upload</button>
     </div>
 </body>
 </html>
