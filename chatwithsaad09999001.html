@@ -21,6 +21,29 @@
             margin: 10px 0;
         }
 
+        .image-container {
+            border: 2px solid #000;
+            padding: 10px;
+            display: inline-block;
+            text-align: center;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-container img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .caption {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
         .chat-box {
             border: 1px solid #ccc;
             background-color: #fff;
@@ -29,6 +52,7 @@
             overflow-y: scroll;
             padding: 10px;
             border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             margin-bottom: 10px;
         }
 
@@ -38,6 +62,7 @@
             margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         button {
@@ -48,19 +73,29 @@
             background-color: #007bff;
             color: white;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
 
         button:hover {
             background-color: #0056b3;
         }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+
+        li {
+            margin: 5px 0;
+        }
     </style>
     <script type="module">
-        // Import the functions you need from the SDKs you need
+        // Import Firebase SDK
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-        import { getDatabase, ref, onChildAdded, push } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+        import { getDatabase, ref, onChildAdded, push, remove, get, child } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
         import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBScJODyKPfXr59q2cLalFMtk_yDSM2WyA",
             authDomain: "saad-82b8f.firebaseapp.com",
@@ -72,12 +107,10 @@
             measurementId: "G-83R61P5P8G"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const storage = getStorage(app);
 
-        // Load messages function
         function loadMessages() {
             const chatBox = document.getElementById('chat-box');
             const messagesRef = ref(database, 'messages');
@@ -85,26 +118,31 @@
             onChildAdded(messagesRef, (data) => {
                 const messageData = data.val();
                 const p = document.createElement('p');
-                if (messageData.message) {
+
+                // Check if the message is an image URL
+                if (messageData.message.startsWith('https://')) {
+                    const img = document.createElement('img');
+                    img.src = messageData.message;
+                    img.width = 100;
+                    p.appendChild(img);
+                } else {
                     p.textContent = `${messageData.username}: ${messageData.message}`;
-                } else if (messageData.imageUrl) {
-                    p.innerHTML = `${messageData.username}: <img src="${messageData.imageUrl}" width="100px" height="100px">`;
                 }
+
                 chatBox.appendChild(p);
             });
         }
 
-        // Send message function
         function sendMessage() {
             const input = document.getElementById('chat-input');
-            const username = document.getElementById('username').value.trim() || "Anonymous"; // Default to "Anonymous" if no name
+            const username = document.getElementById('username').value.trim() || "Anonymous";
             const message = input.value.trim();
 
             if (message) {
                 const messagesRef = ref(database, 'messages');
                 push(messagesRef, { username, message })
                     .then(() => {
-                        input.value = ''; // Clear input
+                        input.value = '';
                     })
                     .catch((error) => {
                         console.error('Error sending message:', error);
@@ -112,35 +150,44 @@
             }
         }
 
-        // Upload image function
+        function clearChat() {
+            const messagesRef = ref(database, 'messages');
+            get(messagesRef)
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        snapshot.forEach((childSnapshot) => {
+                            remove(ref(database, `messages/${childSnapshot.key}`))
+                                .catch((error) => {
+                                    console.error('Error removing message:', error);
+                                });
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error getting messages:', error);
+                });
+        }
+
         function uploadImage() {
-            const fileInput = document.getElementById('image-input');
+            const fileInput = document.getElementById('file-input');
             const file = fileInput.files[0];
-            const username = document.getElementById('username').value.trim() || "Anonymous"; // Default to "Anonymous"
 
             if (file) {
-                const storageReference = storageRef(storage, `images/${file.name}`);
-                uploadBytes(storageReference, file).then((snapshot) => {
-                    getDownloadURL(snapshot.ref).then((downloadURL) => {
+                const storageRefPath = storageRef(storage, 'images/' + file.name);
+                uploadBytes(storageRefPath, file).then((snapshot) => {
+                    getDownloadURL(snapshot.ref).then((url) => {
+                        const username = document.getElementById('username').value.trim() || "Anonymous";
                         const messagesRef = ref(database, 'messages');
-                        push(messagesRef, { username, imageUrl: downloadURL })
-                            .then(() => {
-                                fileInput.value = ''; // Clear file input
-                            })
-                            .catch((error) => {
-                                console.error('Error sending image:', error);
-                            });
+                        push(messagesRef, { username, message: url });
                     });
-                }).catch((error) => {
-                    console.error('Error uploading image:', error);
                 });
             }
         }
 
-        // On window load, load messages
         window.onload = () => {
             loadMessages();
             document.getElementById('send-button').onclick = sendMessage;
+            document.getElementById('clear-button').onclick = clearChat;
             document.getElementById('upload-button').onclick = uploadImage;
         };
     </script>
@@ -149,14 +196,24 @@
     <div>
         <h1>Chat</h1>
         <h3>Welcome to chat</h3>
+        <b><p>Instructions:</p></b>
+        <ul>
+            <li><p>For clearing chat click clear chat and the messages will clear after you refresh the page again.</p></li>
+            <li><p>Enter your name only one time and then chat in the below box.</p></li>
+        </ul>
+        <div class="image-container">
+            <img src="2.1.jpg" alt="Description of the image">
+            <div class="caption">I will protect your chat</div>
+        </div>
         <input type="text" id="username" placeholder="Enter your name" />
         <div id="chat-box" class="chat-box"></div>
         <input type="text" id="chat-input" placeholder="Type a message..." />
         <button id="send-button">Send</button>
-
-        <!-- File input for image uploads -->
-        <input type="file" id="image-input" />
-        <button id="upload-button">Upload Image</button>
+        <button id="clear-button">Clear Chat</button> <!-- Restored clear chat button -->
+        
+        <!-- File upload section -->
+        <input type="file" id="file-input" accept=".jpg,.jpeg" /> <!-- Accept only JPG/JPEG files -->
+        <button id="upload-button">Upload Image</button> <!-- Upload button -->
     </div>
 </body>
 </html>
