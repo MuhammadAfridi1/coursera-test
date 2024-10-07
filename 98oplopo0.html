@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Chat App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #chat-box {
+            border: 1px solid #000;
+            height: 300px;
+            overflow-y: scroll;
+            margin: 10px 0;
+            padding: 10px;
+            background: #eaeaea;
+            border-radius: 5px;
+        }
+        input[type="text"], input[type="file"], button {
+            width: calc(100% - 20px);
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #chat-box img {
+            max-width: 200px;
+            display: block;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Private Chat Room</h2>
+        <input type="text" id="username" placeholder="Enter your name" />
+        <input type="text" id="room-input" placeholder="Enter chat room name" />
+        <button id="room-button">Join Chat Room</button>
+        <div id="chat-box"></div>
+        <input type="file" id="image-input" accept="image/*" />
+        <input type="text" id="chat-input" placeholder="Type a message" />
+        <button id="send-button">Send</button>
+        <button onclick="clearChat()">Clear Chat</button>
+    </div>
+
+    <script type="module">
+    // Import necessary Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { getDatabase, ref, onChildAdded, push, off } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBScJODyKPfXr59q2cLalFMtk_yDSM2WyA",
+        authDomain: "saad-82b8f.firebaseapp.com",
+        databaseURL: "https://saad-82b8f-default-rtdb.firebaseio.com",
+        projectId: "saad-82b8f",
+        storageBucket: "saad-82b8f.appspot.com",
+        messagingSenderId: "973441769275",
+        appId: "1:973441769275:web:572afd367cb5c3b6c9a11e",
+        measurementId: "G-83R61P5P8G"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const storage = getStorage(app);
+
+    let chatRoom = ''; // Variable to hold the chat room name
+    let messagesRef; // Reference to the chat room in the database
+
+    // Function to load messages
+    function loadMessages() {
+        const chatBox = document.getElementById('chat-box');
+
+        // Remove previous listener if a new room is selected
+        if (messagesRef) {
+            off(messagesRef);  // Detach any previous listeners
+            console.log('Previous listeners detached.');
+        }
+
+        // Set new chat room reference
+        messagesRef = ref(database, `chat_rooms/${chatRoom}`);
+        console.log('New messages ref:', messagesRef);
+
+        // Add listener for new messages
+        onChildAdded(messagesRef, (data) => {
+            const messageData = data.val();
+            console.log('Message data received:', messageData);  // Log received message data
+            
+            const p = document.createElement('p');
+            p.textContent = `${messageData.username}: ${messageData.message}`;
+
+            // If there's an image, create an img element
+            if (messageData.image) {
+                const img = document.createElement('img');
+                img.src = messageData.image;
+                img.alt = "Shared Image";
+                chatBox.appendChild(img);
+            }
+
+            chatBox.appendChild(p);
+            chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the bottom
+        });
+    }
+
+    // Function to send message including images
+    async function sendMessage() {
+        const input = document.getElementById('chat-input');
+        const username = document.getElementById('username').value.trim() || "Anonymous";
+        const message = input.value.trim();
+        const imageInput = document.getElementById('image-input');
+        const file = imageInput.files[0]; // Get the selected file
+
+        console.log('Sending message:', message);
+
+        if (file) {
+            const imageRef = storageRef(storage, `images/${file.name}`);
+            try {
+                console.log('Uploading image:', file.name);
+                await uploadBytes(imageRef, file);
+                const downloadURL = await getDownloadURL(imageRef);
+                console.log('Image uploaded, URL:', downloadURL);
+
+                push(messagesRef, { username, message, image: downloadURL })
+                    .then(() => {
+                        input.value = '';
+                        imageInput.value = ''; // Clear the file input
+                        console.log('Message with image sent successfully');
+                    })
+                    .catch((error) => {
+                        console.error('Error sending message:', error);
+                    });
+            } catch (error) {
+                console.error('Error uploading image:', error);
+            }
+        } else if (message) {
+            push(messagesRef, { username, message })
+                .then(() => {
+                    input.value = '';
+                    console.log('Message sent successfully');
+                })
+                .catch((error) => {
+                    console.error('Error sending message:', error);
+                });
+        }
+    }
+
+    // Function to clear chat
+    function clearChat() {
+        const chatBox = document.getElementById('chat-box');
+        chatBox.innerHTML = '';
+        console.log('Chat cleared');
+    }
+
+    // Function to handle chat room submission
+    function joinChatRoom() {
+        const roomInput = document.getElementById('room-input');
+        chatRoom = roomInput.value.trim();
+        if (chatRoom) {
+            console.log('Joining chat room:', chatRoom);
+            loadMessages(); // Load messages for the new chat room
+            roomInput.value = ''; // Clear the input
+            document.getElementById('chat-box').innerHTML = ''; // Clear chat box
+        }
+    }
+
+    document.getElementById('send-button').addEventListener('click', sendMessage);
+    document.getElementById('room-button').addEventListener('click', joinChatRoom);
+</script>
+
+</body>
+</html>
