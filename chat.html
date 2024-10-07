@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #message-container {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 300px;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .message {
+            padding: 5px;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        #chat-input {
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Chat Box</h1>
+    
+    <div id="message-container"></div>
+
+    <input type="text" id="chat-input" placeholder="Type your message">
+    <button onclick="sendMessage()">Send</button>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
