@@ -119,7 +119,7 @@
                 const messageData = data.val();
                 const p = document.createElement('p');
 
-                // Check if the message is a URL
+                // Check if the message is an image URL
                 if (messageData.message.startsWith('https://')) {
                     // Check for video formats
                     if (messageData.message.endsWith('.mp4') || messageData.message.endsWith('.mov')) {
@@ -141,14 +141,16 @@
                     else {
                         const img = document.createElement('img');
                         img.src = messageData.message;
-                        img.width = 100;
+                        img.width = 100; // Adjust image size as needed
                         p.appendChild(img);
                     }
                 } else {
+                    // Display regular text messages
                     p.textContent = `${messageData.username}: ${messageData.message}`;
                 }
 
                 chatBox.appendChild(p);
+                chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom of the chat
             });
         }
 
@@ -192,7 +194,7 @@
             const file = fileInput.files[0];
 
             if (file) {
-                const storageRefPath = storageRef(storage, 'uploads/' + file.name); // Change to 'uploads/' to prevent overwriting images
+                const storageRefPath = storageRef(storage, 'images/' + file.name);
                 uploadBytes(storageRefPath, file).then((snapshot) => {
                     getDownloadURL(snapshot.ref).then((url) => {
                         const username = document.getElementById('username').value.trim() || "Anonymous";
@@ -232,7 +234,7 @@
         
         <!-- File upload section -->
         <input type="file" id="file-input" accept=".jpg,.jpeg,.mp4,.mov,.pdf" />
-        <button id="upload-button">Upload</button> <!-- Upload button -->
+        <button id="upload-button">Upload Image</button>
     </div>
 </body>
 </html>
