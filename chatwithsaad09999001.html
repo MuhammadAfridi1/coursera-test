@@ -110,6 +110,7 @@
         import { getDatabase, ref, onChildAdded, push, remove, get } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
         import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+        
 
         const firebaseConfig = {
             apiKey: "AIzaSyBScJODyKPfXr59q2cLalFMtk_yDSM2WyA",
@@ -230,16 +231,19 @@
         }
 
         // Sign in function
-        function signIn() {
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    const user = result.user;
-                    console.log('User signed in: ', user);
-                })
-                .catch((error) => {
-                    console.error('Error signing in: ', error);
-                });
-        }
+function signInWithGoogle() {
+    auth.signInWithPopup(provider)
+        .then((result) => {
+            const user = result.user;
+            console.log('User signed in:', user);
+            // Handle post-sign-in actions here (e.g., redirect to another page, load user data, etc.)
+        })
+        .catch((error) => {
+            console.error('Error signing in:', error);
+            alert('Error: ' + error.message); // Show user-friendly error
+        });
+}
+
 
         // Sign out function
         function signOutUser() {
@@ -251,20 +255,15 @@
         }
 
         // Monitor authentication state
-        onAuthStateChanged(auth, (user) => {
+firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                document.getElementById('chat-area').classList.remove('hidden');
-                document.getElementById('sign-in-button').classList.add('hidden');
-                document.getElementById('sign-out-button').classList.remove('hidden');
-                loadMessages();
+                console.log('User is signed in:', user);
             } else {
-                document.getElementById('chat-area').classList.add('hidden');
-                document.getElementById('sign-in-button').classList.remove('hidden');
-                document.getElementById('sign-out-button').classList.add('hidden');
+                console.log('No user is signed in.');
             }
         });
+        
 
-        window.onload = () => {
             // Automatically sign in or check for existing user
             onAuthStateChanged(auth, (user) => {
                 if (user) {
@@ -277,7 +276,7 @@
 <body>
     <h1>Chat Application</h1>
     <div id="sign-in-area">
-        <button id="sign-in-button" onclick="signIn()">Sign in with Google</button>
+        <button id="google-sign-in" onclick="signInWithGoogle()">Sign in with Google</button>
         <button id="sign-out-button" onclick="signOutUser()" class="hidden">Sign out</button>
     </div>
     
