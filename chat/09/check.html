@@ -63,104 +63,114 @@
     </div>
 
     <script type="module">
-        // Import necessary Firebase modules
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-        import { getDatabase, ref, onChildAdded, push } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
-        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+    // Import necessary Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { getDatabase, ref, onChildAdded, push } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            databaseURL: "https://<YOUR_FIREBASE_PROJECT_ID>.firebaseio.com", // Ensure this is in the correct format
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID",
-            measurementId: "YOUR_MEASUREMENT_ID"
-        };
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBScJODyKPfXr59q2cLalFMtk_yDSM2WyA",
+        authDomain: "saad-82b8f.firebaseapp.com",
+        databaseURL: "https://saad-82b8f-default-rtdb.firebaseio.com",
+        projectId: "saad-82b8f",
+        storageBucket: "saad-82b8f.appspot.com",
+        messagingSenderId: "973441769275",
+        appId: "1:973441769275:web:572afd367cb5c3b6c9a11e",
+        measurementId: "G-83R61P5P8G"
+    };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-        const storage = getStorage(app);
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const storage = getStorage(app);
 
-        let chatRoom = ''; // Variable to hold the chat room name
+    let chatRoom = ''; // Variable to hold the chat room name
 
-        // Function to load messages
-        function loadMessages() {
-            const chatBox = document.getElementById('chat-box');
+    // Function to load messages
+    function loadMessages() {
+        const chatBox = document.getElementById('chat-box');
+        const messagesRef = ref(database, `chat_rooms/${chatRoom}`);
+
+        onChildAdded(messagesRef, (data) => {
+            const messageData = data.val();
+            const p = document.createElement('p');
+            p.textContent = `${messageData.username}: ${messageData.message}`;
+
+            // If there's an image, create an img element
+            if (messageData.image) {
+                const img = document.createElement('img');
+                img.src = messageData.image;
+                img.alt = "Shared Image";
+                chatBox.appendChild(img);
+            }
+            
+            chatBox.appendChild(p);
+        });
+    }
+
+    // Function to send message including images
+    async function sendMessage() {
+        const input = document.getElementById('chat-input');
+        const username = document.getElementById('username').value.trim() || "Anonymous";
+        const message = input.value.trim();
+        const imageInput = document.getElementById('image-input');
+        const file = imageInput.files[0]; // Get the selected file
+
+        if (file) {
+            const imageRef = storageRef(storage, `images/${file.name}`);
+            try {
+                // Upload image to Firebase Storage
+                await uploadBytes(imageRef, file);
+                // Get the download URL
+                const downloadURL = await getDownloadURL(imageRef);
+
+                // Push message with image URL
+                const messagesRef = ref(database, `chat_rooms/${chatRoom}`);
+                push(messagesRef, { username, message, image: downloadURL })
+                    .then(() => {
+                        input.value = '';
+                        imageInput.value = ''; // Clear the file input
+                    })
+                    .catch((error) => {
+                        console.error('Error sending message:', error);
+                    });
+            } catch (error) {
+                console.error('Error uploading image:', error);
+            }
+        } else if (message) {
+            // Push message without image
             const messagesRef = ref(database, `chat_rooms/${chatRoom}`);
-
-            onChildAdded(messagesRef, (data) => {
-                const messageData = data.val();
-                const p = document.createElement('p');
-                p.textContent = `${messageData.username}: ${messageData.message}`;
-
-                // If there's an image, create an img element
-                if (messageData.image) {
-                    const img = document.createElement('img');
-                    img.src = messageData.image;
-                    img.alt = "Shared Image";
-                    chatBox.appendChild(img);
-                }
-                
-                chatBox.appendChild(p);
-                chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
-            });
-        }
-
-        // Function to send message including images
-        async function sendMessage() {
-            const input = document.getElementById('chat-input');
-            const username = document.getElementById('username').value.trim() || "Anonymous";
-            const message = input.value.trim();
-            const imageInput = document.getElementById('image-input');
-            const file = imageInput.files[0]; // Get the selected file
-
-            const messagesRef = ref(database, `chat_rooms/${chatRoom}`);
-
-            if (file) {
-                const imageRef = storageRef(storage, `images/${file.name}`);
-                try {
-                    // Upload image to Firebase Storage
-                    await uploadBytes(imageRef, file);
-                    // Get the download URL
-                    const downloadURL = await getDownloadURL(imageRef);
-
-                    // Push message with image URL
-                    await push(messagesRef, { username, message, image: downloadURL });
+            push(messagesRef, { username, message })
+                .then(() => {
                     input.value = '';
-                    imageInput.value = ''; // Clear the file input
-                } catch (error) {
-                    console.error('Error uploading image:', error);
-                }
-            } else if (message) {
-                // Push message without image
-                await push(messagesRef, { username, message });
-                input.value = '';
-            }
+                })
+                .catch((error) => {
+                    console.error('Error sending message:', error);
+                });
         }
+    }
 
-        // Function to clear chat
-        function clearChat() {
-            const chatBox = document.getElementById('chat-box');
-            chatBox.innerHTML = '';
+    // Function to clear chat
+    function clearChat() {
+        const chatBox = document.getElementById('chat-box');
+        chatBox.innerHTML = '';
+    }
+
+    // Function to handle chat room submission
+    function joinChatRoom() {
+        const roomInput = document.getElementById('room-input');
+        chatRoom = roomInput.value.trim();
+        if (chatRoom) {
+            loadMessages(); // Load messages for the new chat room
+            roomInput.value = ''; // Clear the input
+            document.getElementById('chat-box').innerHTML = ''; // Clear chat box
         }
+    }
 
-        // Function to handle chat room submission
-        function joinChatRoom() {
-            const roomInput = document.getElementById('room-input');
-            chatRoom = roomInput.value.trim();
-            if (chatRoom) {
-                loadMessages(); // Load messages for the new chat room
-                roomInput.value = ''; // Clear the input
-                document.getElementById('chat-box').innerHTML = ''; // Clear chat box
-            }
-        }
+    document.getElementById('send-button').addEventListener('click', sendMessage);
+    document.getElementById('room-button').addEventListener('click', joinChatRoom);
+</script>
 
-        document.getElementById('send-button').addEventListener('click', sendMessage);
-        document.getElementById('room-button').addEventListener('click', joinChatRoom);
-    </script>
 </body>
 </html>
