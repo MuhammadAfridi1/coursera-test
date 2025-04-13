@@ -1,58 +1,281 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Pakistan</title>
-        <style>
-            h3{
-                text-align: center;
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Skills & Experience | Muhammad Afridi</title>
+    <link rel="icon" href="1.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --text-color: #333;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --hover-color: #f0f0f0;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #4cc9f0;
+            --secondary-color: #4895ef;
+            --text-color: #f8f9fa;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #333;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --hover-color: #2a2a2a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .theme-toggle-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        #theme-toggle {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            transition: transform 0.3s;
+        }
+
+        #theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .skills-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .skill-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-align: center;
+            padding: 25px 20px;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px var(--shadow-color);
+        }
+
+        .skill-logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 15px;
+            object-fit: contain;
+        }
+
+        .skill-card h3 {
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+
+        .skill-card p {
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 12px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-weight: 500;
+        }
+
+        .back-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            .skills-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             }
-            body {
-                margin: 0;
-                padding: 0;
-                font-family: Arial, sans-serif;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                min-height: 100vh;
+            
+            .header h1 {
+                font-size: 2rem;
             }
-            .boxdiv {
-                max-width: 800px;
-                margin: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .skills-grid {
+                grid-template-columns: 1fr;
             }
-            img {
-                max-width: 100%;
-                height: 100px;
-                margin: 10px auto;
+            
+            .skill-logo {
+                width: 80px;
+                height: 80px;
             }
-            .boxdiv{
-    background-color: aliceblue;
-    border: solid;
-    border-color: cornflowerblue;
-    border-width: 1px;
-    margin: 0px 2px 15px 2px;
-    padding: 0px 17px 5px 17px;
-    border-radius: 25px;
-    font-family: Verdana, Geneva, sans-serif;
-}
-        </style>
-    </head>
+        }
+    </style>
+</head>
 <body>
+    <div class="theme-toggle-container">
+        <button id="theme-toggle" aria-label="Toggle dark mode">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
 
-<div class="boxdiv">    
+    <div class="header">
+        <h1>My Skills & Experience</h1>
+        <p>Programming languages and tools I'm proficient with</p>
+    </div>
 
-<h3>Experience</h3>
-<p>I have experience and have used the following tools and programming languages:</p>
-<ol>
-    <li><a href="https://msafridi.studio/C">C Language</a></li>
-    <li><a href="https://msafridi.studio/c++">C++ Language</a></li>
-    <li><a href="https://msafridi.studio/java">Java Language</a></li>
-    <li><a href="https://msafridi.studio/python">Python Language</a></li>
-    <li><a href="https://msafridi.studio/webdevelopment">Web Development</a></li>
-    <li><a href="https://msafridi.studio/excel">Microsoft Excel</a></li>
-    <li><a href="https://msafridi.studio/word">Microsoft Word</a></li>
-</ol>
-</div>
+    <div class="skills-container">
+        <div class="skills-grid">
+            <!-- C Language -->
+            <a href="https://msafridi.studio/C" class="skill-card" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/C_Programming_Language.svg" alt="C Language" class="skill-logo">
+                <h3>C Language</h3>
+                <p>Procedural programming language for system development</p>
+            </a>
+
+            <!-- C++ -->
+            <a href="https://msafridi.studio/c++" class="skill-card" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/ISO_C%2B%2B_Logo.svg" alt="C++" class="skill-logo">
+                <h3>C++</h3>
+                <p>Object-oriented programming language for performance-critical applications</p>
+            </a>
+
+            <!-- Java -->
+            <a href="https://msafridi.studio/java" class="skill-card" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/en/3/30/Java_programming_language_logo.svg" alt="Java" class="skill-logo">
+                <h3>Java</h3>
+                <p>Popular object-oriented language for enterprise applications</p>
+            </a>
+
+            <!-- Python -->
+            <a href="https://msafridi.studio/python" class="skill-card" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" alt="Python" class="skill-logo">
+                <h3>Python</h3>
+                <p>Versatile high-level language for web, data science, and automation</p>
+            </a>
+
+            <!-- Web Development -->
+            <a href="https://msafridi.studio/webdevelopment" class="skill-card" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/61/HTML5_logo_and_wordmark.svg" alt="Web Development" class="skill-logo">
+                <h3>Web Development</h3>
+                <p>HTML, CSS, JavaScript and modern web frameworks</p>
+            </a>
+
+            <!-- Microsoft Excel -->
+            <a href="https://msafridi.studio/excel" class="skill-card" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/34/Microsoft_Office_Excel_%282019%E2%80%93present%29.svg" alt="Excel" class="skill-logo">
+                <h3>Microsoft Excel</h3>
+                <p>Spreadsheet software for data analysis and visualization</p>
+            </a>
+
+            <!-- Microsoft Word -->
+            <a href="https://msafridi.studio/word" class="skill-card" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Microsoft_Office_Word_%282019%E2%80%93present%29.svg" alt="Word" class="skill-logo">
+                <h3>Microsoft Word</h3>
+                <p>Word processing software for document creation</p>
+            </a>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to Portfolio
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        
+        // Check for saved theme preference or use system preference
+        const currentTheme = localStorage.getItem('theme') || 
+                            (prefersDarkScheme.matches ? 'dark' : 'light');
+        
+        if (currentTheme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+        
+        // Theme toggle button click event
+        themeToggle.addEventListener('click', function() {
+            let theme;
+            if (document.body.getAttribute('data-theme') === 'dark') {
+                document.body.removeAttribute('data-theme');
+                theme = 'light';
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+                theme = 'dark';
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+            localStorage.setItem('theme', theme);
+        });
+    </script>
 </body>
 </html>
