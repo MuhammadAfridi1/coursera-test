@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danyal Khalid - The Legend</title>
+  <style>
+    /* CSS Styles */
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background-color: #f0f8ff;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.5s;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(45deg, #ff00cc, #3333ff);
+      color: white;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      animation: rainbow 5s infinite;
+    }
+
+    @keyframes rainbow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      font-size: 3em;
+      margin: 0;
+      text-shadow: 3px 3px 0 #000;
+    }
+
+    h2 {
+      color: #ff69b4;
+      border-bottom: 3px dotted #ff69b4;
+      padding-bottom: 5px;
+    }
+
+    .profile-pic {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      border: 5px solid gold;
+      margin: 20px auto;
+      background-color: #ddd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 5em;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transition: transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-pic img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.3s;
+    }
+
+    .profile-pic .crown {
+      position: absolute;
+      font-size: 80px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .profile-pic:hover {
+      transform: rotate(360deg) scale(1.1);
+    }
+
+    .profile-pic:hover img {
+      opacity: 0.7;
+    }
+
+    .profile-pic:hover .crown {
+      opacity: 1;
+      text-shadow: 0 0 10px gold;
+    }
+
+    .fact-box {
+      background-color: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 15px 0;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .fact-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+      background-color: #ffffcc;
+    }
+
+    .secret-button {
+      background-color: #ff0000;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-size: 1.2em;
+      cursor: pointer;
+      margin: 20px auto;
+      display: block;
+      transition: all 0.3s;
+    }
+
+    .secret-button:hover {
+      background-color: #cc0000;
+      transform: scale(1.1);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .superpower-meter {
+      width: 100%;
+      height: 30px;
+      background-color: #ddd;
+      border-radius: 15px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+
+    .superpower-level {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #00ff00, #ffff00, #ff0000);
+      transition: width 2s;
+    }
+
+    .dance-party {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .dancer {
+      font-size: 2em;
+      display: inline-block;
+      margin: 0 10px;
+      animation: none;
+    }
+
+    @keyframes dance {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-20px) rotate(10deg); }
+      50% { transform: translateY(0) rotate(0deg); }
+      75% { transform: translateY(-20px) rotate(-10deg); }
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      padding: 20px;
+      background-color: #333;
+      color: white;
+      border-radius: 10px;
+    }
+
+    /* Responsive design */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2em;
+      }
+      .profile-pic {
+        width: 150px;
+        height: 150px;
+      }
+      .profile-pic .crown {
+        font-size: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Danyal Khalid</h1>
+    <p>The Man, The Myth, The Legend</p>
+  </header>
+
+  <div class="profile-pic" id="profilePic">
+    <img src="danyal.jpg" alt="Danyal Khalid">
+    <div class="crown">👑</div>
+  </div>
+
+  <h2>Amazing Facts About Danyal</h2>
+
+  <div class="fact-box" onclick="this.style.backgroundColor='#'+Math.floor(Math.random()*16777215).toString(16)">
+    Danyal once coded an entire app just by staring at his computer intensely.
+  </div>
+
+  <div class="fact-box" onclick="this.style.fontFamily='Papyrus'">
+    Rumor has it Danyal's coffee is actually 90% pure productivity juice.
+  </div>
+
+  <div class="fact-box" onclick="this.innerHTML = this.innerHTML + ' (This is absolutely true!)'">
+    Danyal can solve a Rubik's cube in the time it takes you to say "Danyal can solve a Rubik's cube."
+  </div>
+
+  <div class="fact-box" onclick="this.style.transform='rotate(5deg)'">
+    When Danyal enters a room, the WiFi signal strength doubles automatically.
+  </div>
+
+  <h2>Danyal's Superpower Level</h2>
+  <div class="superpower-meter">
+    <div class="superpower-level" id="superpower"></div>
+  </div>
+
+  <button class="secret-button" id="secretButton">Click for a Surprise!</button>
+
+  <div class="dance-party hidden" id="danceParty">
+    <h2>DANYAL DANCE PARTY! 🎉</h2>
+    <div>
+      <span class="dancer">💃</span>
+      <span class="dancer">🕺</span>
+      <span class="dancer">👯</span>
+      <span class="dancer">🎊</span>
+      <span class="dancer">✨</span>
+    </div>
+    <p>You've unlocked Danyal's secret dance mode!</p>
+  </div>
+
+  <h2>Danyal's Daily Routine</h2>
+  <ol>
+    <li>Wake up (already productive)</li>
+    <li>Solve world hunger (before breakfast)</li>
+    <li>Write perfect code (without Google)</li>
+    <li>Make everyone else look bad (accidentally)</li>
+    <li>Sleep (while continuing to code subconsciously)</li>
+  </ol>
+
+  <h2>Danyal Quotes</h2>
+  <blockquote>"If at first you don't succeed, you're probably not Danyal."</blockquote>
+  <blockquote>"I don't always test my code, but when I don't, it works anyway."</blockquote>
+  <blockquote>"Coffee? No thanks, I run on pure awesomeness."</blockquote>
+
+  <div class="danyal-counter">
+    <h2>Times Danyal Has Been Awesome Today:</h2>
+    <p id="awesomeCounter">0</p>
+  </div>
+
+  <footer>
+    <p>This highly accurate and not-at-all exaggerated tribute was created by your awesome friend</p>
+    <p>© 2023 Danyal Khalid Fan Club (Membership: 1 and growing!)</p>
+  </footer>
+</div>
+
+<script>
+  // JavaScript for interactive elements
+
+  // Animate superpower meter
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      document.getElementById('superpower').style.width = '100%';
+    }, 500);
+
+    // Awesome counter
+    let counter = 0;
+    setInterval(function() {
+      counter++;
+      document.getElementById('awesomeCounter').textContent = counter;
+
+      // Random color change for fun
+      if(counter % 10 === 0) {
+        document.body.style.backgroundColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+      }
+    }, 1000);
+
+    // Profile pic click effect
+    document.getElementById('profilePic').addEventListener('click', function() {
+      this.style.borderColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+    });
+
+    // Secret button
+    document.getElementById('secretButton').addEventListener('click', function() {
+      const party = document.getElementById('danceParty');
+      party.classList.toggle('hidden');
+
+      if(!party.classList.contains('hidden')) {
+        const dancers = document.querySelectorAll('.dancer');
+        dancers.forEach(dancer => {
+          dancer.style.animation = 'dance 0.5s infinite';
+        });
+
+        // Change background to party mode
+        document.body.style.background = 'linear-gradient(45deg, #ff0000, #ff00cc, #3333ff, #00ffff)';
+        document.body.style.backgroundSize = '400% 400%';
+        document.body.style.animation = 'rainbow 5s infinite';
+      } else {
+        document.body.style.background = '#f0f8ff';
+        document.body.style.animation = 'none';
+      }
+    });
+
+    // Make fact boxes more interactive
+    const facts = document.querySelectorAll('.fact-box');
+    facts.forEach(fact => {
+      fact.addEventListener('mouseover', function() {
+        this.style.transform = 'scale(1.02)';
+      });
+      fact.addEventListener('mouseout', function() {
+        this.style.transform = 'scale(1)';
+      });
+    });
+
+    // Easter egg - Konami code
+    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let konamiIndex = 0;
+
+    document.addEventListener('keydown', function(e) {
+      if(e.key === konamiCode[konamiIndex]) {
+        konamiIndex++;
+        if(konamiIndex === konamiCode.length) {
+          // Konami code completed!
+          alert('Danyal Mode Activated! Ultimate powers unlocked!');
+          document.body.style.background = 'url(https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif)';
+          document.body.style.backgroundSize = 'cover';
+          konamiIndex = 0;
+        }
+      } else {
+        konamiIndex = 0;
+      }
+    });
+  });
+</script>
+</body>
+</html>
